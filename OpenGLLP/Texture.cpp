@@ -1,10 +1,9 @@
 #include"Texture.h"
 
 
-Texture::Texture(unsigned id, string pohtoName, int channlNumber,
+Texture::Texture(string pohtoName, int channlNumber,
     string WRAPS, string WRAPT, string MINFILTER, string MAGFILTER)
 {
-	textureID = id;
 	textureName = pohtoName;
 	channls = channlNumber;
 
@@ -83,7 +82,7 @@ void Texture::creatTexture()
     {
         if(channls==3)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        if (channls == 4)
+        else if (channls == 4)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
