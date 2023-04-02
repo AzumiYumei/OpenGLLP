@@ -12,6 +12,9 @@ using namespace std;
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+int screenWeight = 1200;
+int screenHeight = 1200;
+
 float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -77,7 +80,7 @@ void main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(screenWeight, screenHeight, "LearnOpenGL", NULL, NULL);
 
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
