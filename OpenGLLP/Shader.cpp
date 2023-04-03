@@ -109,7 +109,7 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat)
 
 void Shader::OpenProjection(float radians,float screenWeight,float screenHeight,float near,float far)
 {
-    glm::mat4 projection;
+    glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(radians), screenWeight / screenHeight, near, far);
     setMat4("projection", projection);
 }

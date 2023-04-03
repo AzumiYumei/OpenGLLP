@@ -114,6 +114,8 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard("RIGHT", DeletaTime());
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         camera.ProcessKeyboard("SHIFT", DeletaTime());
+    else 
+        camera.ProcessKeyboard("NULL", DeletaTime());
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
@@ -228,7 +230,7 @@ void main()
         
         //shader.OpenView(camera);
             
-        glm::mat4 view = glm::mat4(1.0f);;
+        glm::mat4 view = glm::mat4(1.0f);
         view = camera.GetViewMatrix();
         shader.setMat4("view", view);
         
@@ -237,7 +239,7 @@ void main()
         glBindVertexArray(VAO);
         for (int i = 0; i < 10; i++)
         {
-            glm::mat4 model = glm::mat4(1.0f); ;
+            glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));

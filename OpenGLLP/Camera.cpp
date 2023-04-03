@@ -49,6 +49,7 @@ void Camera::ProcessKeyboard(string MovemDirection, float deltaTime)
     if (MovemDirection == "RIGHT")
         cameraPosition += cameraRight * velocity;
 
+    if (MovemDirection == "NULL");
     cout << deltaTime << endl;
 }
 
@@ -67,3 +68,4 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset)
 
     updateCameraVectors();
 }
+
