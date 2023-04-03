@@ -94,7 +94,7 @@ Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 
 
 float DeletaTime()
 {
-    deltaTime = glfwGetTime(); - lastFrame;
+    deltaTime = glfwGetTime() - lastFrame;
     lastFrame = glfwGetTime();
     return deltaTime;
 }
@@ -160,6 +160,9 @@ void main()
     //如果不加上下面两条公式，那么就内存分配就会出错
     glfwMakeContextCurrent(window);
 
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK)
         printf("Error\n");
@@ -168,7 +171,6 @@ void main()
     //监听鼠标信息
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    glfwSetCursorPosCallback(window, mouse_callback);
 
     //打开深度测试
     glEnable(GL_DEPTH_TEST);
@@ -206,6 +208,7 @@ void main()
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
 
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -223,14 +226,18 @@ void main()
 
         shader.OpenProjection(45.0f,screenWeight,screenHeight,0.1f,100.0f);
         
-        shader.OpenView(camera);
-
+        //shader.OpenView(camera);
+            
+        glm::mat4 view = glm::mat4(1.0f);;
+        view = camera.GetViewMatrix();
+        shader.setMat4("view", view);
+        
 
         //开始渲染
         glBindVertexArray(VAO);
         for (int i = 0; i < 10; i++)
         {
-            glm::mat4 model ;
+            glm::mat4 model = glm::mat4(1.0f); ;
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
