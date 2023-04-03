@@ -1,3 +1,4 @@
+
 #define GLEW_STATIC
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
@@ -14,11 +15,13 @@ using namespace std;
 
 #include<iostream>
 #include<string>
+
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-int screenWeight = 1200;
-int screenHeight = 1200;
+int screenWeight = 600;
+int screenHeight = 600;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -141,6 +144,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 void main()
 {
+
     //初始化
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -152,7 +156,15 @@ void main()
     GLFWwindow* window = glfwCreateWindow(screenWeight, screenHeight, "LearnOpenGL", NULL, NULL);
 
     glViewport(0, 0, screenWeight, screenHeight);
-    
+
+    //如果不加上下面两条公式，那么就内存分配就会出错
+    glfwMakeContextCurrent(window);
+
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK)
+        printf("Error\n");
+
+
     //监听鼠标信息
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 

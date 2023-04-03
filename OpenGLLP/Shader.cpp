@@ -8,10 +8,11 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     ifstream vertexShaderFile;
     ifstream fragmentShaderFile;
     // 保证ifstream对象可以抛出异常：
-    vertexShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
-    fragmentShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    vertexShaderFile.exceptions(ifstream::failbit || ifstream::badbit);
+    fragmentShaderFile.exceptions(ifstream::failbit || ifstream::badbit);
     try
     {
+        if (!vertexShaderFile.is_open()||!fragmentShaderFile.is_open())
         // 打开文件
         vertexShaderFile.open(vertexPath);
         fragmentShaderFile.open(fragmentPath);
@@ -26,7 +27,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
     }
-    catch (std::ifstream::failure e)
+    catch (ifstream::failure e)
     {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
@@ -44,7 +45,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 
     // 片段着色器
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(vertex, 1, &fragmentShaderCode, NULL);
+    glShaderSource(fragment, 1, &fragmentShaderCode, NULL);
     glCompileShader(fragment);
     CheckCode(fragment, "SHADER");
 
@@ -81,7 +82,7 @@ void Shader:: CheckCode(unsigned int id, string name)
             std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
         };
     }
-    else if (name=="PROGRAM")
+    if (name=="PROGRAM")
     {
         glGetProgramiv(id, GL_LINK_STATUS, &success);
         if (!success)
