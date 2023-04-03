@@ -6,6 +6,12 @@
 #include <iostream>
 using namespace std;
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include"Camera.h"
+
 class Shader
 {
 public:
@@ -21,7 +27,11 @@ public:
 
 	void setFloat(const string& name, float value);
 
+	void setMat4(const std::string& name, const glm::mat4& mat);
 
+	void OpenProjection(float radians, float screenWeight, float screenHeight, float near, float far);
+
+	void OpenView(Camera camera);
 
 private:
 

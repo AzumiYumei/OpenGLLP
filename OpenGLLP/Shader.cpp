@@ -46,7 +46,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vertex, 1, &fragmentShaderCode, NULL);
     glCompileShader(fragment);
-    CheckCode(fragment, "PROGRAM");
+    CheckCode(fragment, "SHADER");
 
 
     // 着色器程序
@@ -54,7 +54,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     glAttachShader(shaderID, vertex);
     glAttachShader(shaderID, fragment);
     glLinkProgram(shaderID);
-    CheckCode(shaderID, false);
+    CheckCode(shaderID, "PROGRAM");
 
 
     // 删除着色器
@@ -100,4 +100,22 @@ void Shader::setInt(const string& name, int value)
 void Shader::setFloat(const string& name, float value)
 {
     glUniform1f(glGetUniformLocation(shaderID, name.c_str()), value);
+}
+void Shader::setMat4(const std::string& name, const glm::mat4& mat) 
+{
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+void Shader::OpenProjection(float radians,float screenWeight,float screenHeight,float near,float far)
+{
+    glm::mat4 projection;
+    projection = glm::perspective(glm::radians(radians), screenWeight / screenHeight, near, far);
+    setMat4("projection", projection);
+}
+
+void Shader::OpenView(Camera camera)
+{
+    glm::mat4 view;
+    view = camera.GetViewMatrix();
+    setMat4("view", view);
 }
