@@ -90,7 +90,7 @@ glm::vec3 cubePositions[] = {
 };
 
 //创建摄像机
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f,45.0f);
 
 float DeletaTime()
 {
@@ -105,17 +105,17 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard("FORWARD", DeletaTime());
+        camera.ProcessKeyboard(FORWARD, DeletaTime());
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard("BACKWARD", DeletaTime());
+        camera.ProcessKeyboard(BACKWARD, DeletaTime());
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard("LEFT", DeletaTime());
+        camera.ProcessKeyboard(LEFT, DeletaTime());
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard("RIGHT", DeletaTime());
+        camera.ProcessKeyboard(RIGHT, DeletaTime());
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        camera.ProcessKeyboard("SHIFT", DeletaTime());
+        camera.ProcessKeyboard(SHIFT, DeletaTime());
     else 
-        camera.ProcessKeyboard("NULL", DeletaTime());
+        camera.ProcessKeyboard(NONE, DeletaTime());
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
@@ -152,6 +152,7 @@ void main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 
     //创建窗口
@@ -201,6 +202,9 @@ void main()
     //创建shader
     Shader shader("vertex.txt", "fragment.txt");
 
+    //翻转纹理
+    stbi_set_flip_vertically_on_load(true);
+
     //创建贴图
     Texture texture1("wall.jpg",3,"GL_REPEAT","GL_REPEAT","GL_NEAREST","GL_NEAREST");
     Texture texture2( "awesomeface.png", 4, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
@@ -226,12 +230,14 @@ void main()
 
         shader.use();
 
-        shader.OpenProjection(45.0f,screenWeight,screenHeight,0.1f,100.0f);
+        //shader.OpenProjection(45.0f,screenWeight,screenHeight,0.1f,100.0f);
         
         //shader.OpenView(camera);
+
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)(screenWeight / screenHeight), 0.1f, 100.0f);
+        shader.setMat4("projection", projection);
             
-        glm::mat4 view = glm::mat4(1.0f);
-        view = camera.GetViewMatrix();
+        glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("view", view);
         
 
