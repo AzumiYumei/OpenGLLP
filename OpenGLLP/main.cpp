@@ -271,6 +271,8 @@ void main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
 
     glGenVertexArrays(1, &cubeVAO);
@@ -278,13 +280,14 @@ void main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+   
 
 #pragma endregion
 
     //创建shader
     Shader shader("vertex.txt", "fragment.txt");
-    Shader lightShader("lightVertex.txt", "lightFragment.txt");
-    Shader cubeShader("cubeVertex.txt","cubeFragment.txt");
+    Shader lightShader("lightVertex.txt", "lightFragment.txt");//光照shader
+    Shader cubeShader("cubeVertex.txt","cubeFragment.txt");//发光方块shader
 
     //翻转纹理
     stbi_set_flip_vertically_on_load(true);
@@ -301,8 +304,8 @@ void main()
     lightShader.use();
     lightShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
     lightShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    lightShader.setVec3("lightPos", cubePositions[1]);
 
-    //cubeShader.use();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -331,17 +334,21 @@ void main()
         //}
 
         LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, cubePositions[0]);
-        lightShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-       
+        for (int i = 2; i < 5; i++)
+        {
+             glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            lightShader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
         LoopRanden(cubeShader, cubeVAO, 0.1f, 100.0f);
+        
         glm::mat4 model1 = glm::mat4(1.0f);
         model1 = glm::translate(model1, cubePositions[1]);
         cubeShader.setMat4("model", model1);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
+        
         //交换缓冲
         glfwSwapBuffers(window);
         glfwPollEvents();
