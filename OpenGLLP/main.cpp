@@ -32,48 +32,93 @@ float lastX = screenWeight / 2.0f;
 float lastY = screenHeight / 2.0f;
 
 //顶点数组
+//float vertices[] = {
+//        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+//         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//
+//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//
+//        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+//         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//
+//        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+//        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+//};
+
+//顶点与法向数组
 float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+       -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+       -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+       -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+       -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+       -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+       -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+       -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+       -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 };
 
 glm::vec3 cubePositions[] = {
@@ -90,15 +135,15 @@ glm::vec3 cubePositions[] = {
 };
 
 //创建摄像机
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f,45.0f);
-
+Camera camera(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f,45.0f);
+//单位帧时间差
 float DeletaTime()
 {
     deltaTime = glfwGetTime() - lastFrame;
     lastFrame = glfwGetTime();
     return deltaTime;
 }
-
+//键盘输入
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -112,12 +157,17 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(LEFT, DeletaTime());
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, DeletaTime());
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.ProcessKeyboard(SPACE, DeletaTime()); 
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        camera.ProcessKeyboard(CONTROL, DeletaTime());
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         camera.ProcessKeyboard(SHIFT, DeletaTime());
     else 
         camera.ProcessKeyboard(NONE, DeletaTime());
-}
 
+}
+//鼠标输入
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     float xpos = xposIn;
@@ -138,14 +188,29 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
-
+//滚轮输入
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
 }
+//主循环渲染组
+void LoopRanden(Shader shader,unsigned int VAO,float near,float far)
+{
+    shader.use();
+
+    shader.OpenProjection(camera, screenWeight, screenHeight, near, far);
+
+    shader.OpenView(camera);
+
+    //开始渲染
+    glBindVertexArray(VAO);
+}
 
 void main()
 {
+#pragma region WindowCrate&Init
+
+
 
     //初始化
     glfwInit();
@@ -170,16 +235,17 @@ void main()
     if (glewInit() != GLEW_OK)
         printf("Error\n");
 
+#pragma endregion
 
     //监听鼠标信息
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-
     //打开深度测试
     glEnable(GL_DEPTH_TEST);
+#pragma region VAO&VBO&EBOBind
 
-    //设置VAO、VBO、EBO
-    unsigned int VAO,VBO,EBO;
+    //设置VAO、VBO、EBO、光照VAO
+    unsigned int VAO, VBO, EBO, lightVAO ,cubeVAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -193,14 +259,32 @@ void main()
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    //设置顶点指针
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    ////设置顶点指针
+    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    //glEnableVertexAttribArray(0);
+    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    //glEnableVertexAttribArray(1);
+
+
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+
+
+    glGenVertexArrays(1, &cubeVAO);
+    glBindVertexArray(cubeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+#pragma endregion
 
     //创建shader
     Shader shader("vertex.txt", "fragment.txt");
+    Shader lightShader("lightVertex.txt", "lightFragment.txt");
+    Shader cubeShader("cubeVertex.txt","cubeFragment.txt");
 
     //翻转纹理
     stbi_set_flip_vertically_on_load(true);
@@ -214,6 +298,11 @@ void main()
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
 
+    lightShader.use();
+    lightShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+    lightShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+    //cubeShader.use();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -228,31 +317,30 @@ void main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2.textureID);
 
-        shader.use();
+        //LoopRanden(shader, VAO, 0.1f, 100.0f);
+        //for (int i = 0; i < 10; i++)
+        //{
+        //    glm::mat4 model = glm::mat4(1.0f);
+        //    model = glm::translate(model, cubePositions[i]);
+        //    float angle = 20.0f * i;
+        //    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        //    //shader.setMat4("model", model);
+        //    shader.setMat4("model", model);
+        //    //绘制盒子
+        //    glDrawArrays(GL_TRIANGLES, 0, 36);
+        //}
 
-        //shader.OpenProjection(45.0f,screenWeight,screenHeight,0.1f,100.0f);
-        
-        //shader.OpenView(camera);
-
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)(screenWeight / screenHeight), 0.1f, 100.0f);
-        shader.setMat4("projection", projection);
-            
-        glm::mat4 view = camera.GetViewMatrix();
-        shader.setMat4("view", view);
-        
-
-        //开始渲染
-        glBindVertexArray(VAO);
-        for (int i = 0; i < 10; i++)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            shader.setMat4("model", model);
-            //绘制盒子
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, cubePositions[0]);
+        lightShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+       
+        LoopRanden(cubeShader, cubeVAO, 0.1f, 100.0f);
+        glm::mat4 model1 = glm::mat4(1.0f);
+        model1 = glm::translate(model1, cubePositions[1]);
+        cubeShader.setMat4("model", model1);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //交换缓冲
         glfwSwapBuffers(window);

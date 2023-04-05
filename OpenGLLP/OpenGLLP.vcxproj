@@ -153,7 +153,11 @@
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="cubeFragment.txt" />
+    <Text Include="cubeVertex.txt" />
     <Text Include="fragment.txt" />
+    <Text Include="lightFragment.txt" />
+    <Text Include="lightVertex.txt" />
     <Text Include="vertex.txt" />
   </ItemGroup>
   <ItemGroup>

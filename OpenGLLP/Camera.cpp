@@ -50,7 +50,10 @@ void Camera::ProcessKeyboard(Camera_Movement MovemDirection, float deltaTime)
         cameraPosition -= cameraRight * velocity ;
     if (MovemDirection == RIGHT)
         cameraPosition += cameraRight * velocity ;
-
+    if (MovemDirection == SPACE)
+        cameraPosition += spaceUp * velocity;
+    if (MovemDirection == CONTROL)
+        cameraPosition -= spaceUp * velocity;
     if (MovemDirection == NULL);
     //cout << velocity << endl;
 }

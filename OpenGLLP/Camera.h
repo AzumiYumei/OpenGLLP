@@ -14,7 +14,9 @@ enum Camera_Movement {
 	LEFT,
 	RIGHT,
 	SHIFT,
-	NONE
+	NONE,
+	SPACE,
+	CONTROL
 };
 
 class Camera

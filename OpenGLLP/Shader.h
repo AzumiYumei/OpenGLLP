@@ -27,11 +27,13 @@ public:
 
 	void setFloat(const string& name, float value);
 
-	void setMat4(const std::string& name, const glm::mat4& mat);
+	void setMat4(const string& name, const glm::mat4& mat);
 
-	void OpenProjection(float radians, float screenWeight, float screenHeight, float near, float far);
+	void setVec3(const string& name,const glm::vec3& vec3);
 
-	//void OpenView(Camera camera);
+	void OpenProjection(Camera camera, float screenWeight, float screenHeight, float near, float far);
+
+	void OpenView(Camera camera);
 
 private:
 
