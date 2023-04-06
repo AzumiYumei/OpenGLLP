@@ -2,7 +2,7 @@
 
 
 Camera::Camera(glm::vec3 C_POS , glm::vec3 S_UP,float yaw,float pitch,
-    float moveSpeed,float sensitive,float shiftSpeed,float limitLow,float limitHigh)
+    float moveSpeed,float sensitive,float shiftSpeed,float limitLow,float limitHigh,float zoom)
 {
 	cameraPosition = C_POS;
 	spaceUp = S_UP;
@@ -13,7 +13,7 @@ Camera::Camera(glm::vec3 C_POS , glm::vec3 S_UP,float yaw,float pitch,
     ShiftSpeed = shiftSpeed;
     LimitHigh = limitHigh;
     LimitLow = limitLow;
-
+    Zoom = zoom;
     
 	updateCameraVectors();
 }
@@ -50,7 +50,7 @@ void Camera::ProcessKeyboard(string MovemDirection, float deltaTime)
         cameraPosition += cameraRight * velocity;
 
     if (MovemDirection == "NULL");
-    cout << deltaTime << endl;
+    //cout << deltaTime << endl;
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset)
@@ -65,6 +65,8 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset)
         Pitch = LimitHigh;
     if (Pitch < LimitLow)
         Pitch = LimitLow;
+
+    cout << Pitch << endl;
 
     updateCameraVectors();
 }

@@ -31,7 +31,7 @@ public:
 	float Zoom;
 	float ShiftSpeed;
 	
-	Camera(glm::vec3 C_POS,glm::vec3 S_UP,float yaw,float pitch,float moveSpeed,float sensitive,float shiftSpeed,float limitLow,float limitHigh);
+	Camera(glm::vec3 C_POS,glm::vec3 S_UP,float yaw,float pitch,float moveSpeed,float sensitive,float shiftSpeed,float limitLow,float limitHigh,float zoom);
 
 	glm::mat4 GetViewMatrix();
 	

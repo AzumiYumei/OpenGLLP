@@ -90,7 +90,7 @@ glm::vec3 cubePositions[] = {
 };
 
 //创建摄像机
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f,45.0f);
 
 float DeletaTime()
 {
@@ -169,7 +169,6 @@ void main()
     if (glewInit() != GLEW_OK)
         printf("Error\n");
 
-
     //监听鼠标信息
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -229,12 +228,11 @@ void main()
         shader.OpenProjection(45.0f,screenWeight,screenHeight,0.1f,100.0f);
         
         //shader.OpenView(camera);
-            
-        glm::mat4 view = glm::mat4(1.0f);
-        view = camera.GetViewMatrix();
-        shader.setMat4("view", view);
-        
 
+
+        glm::mat4 view = camera.GetViewMatrix();
+        shader.setMat4("view", view);
+       
         //开始渲染
         glBindVertexArray(VAO);
         for (int i = 0; i < 10; i++)
@@ -243,6 +241,7 @@ void main()
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            
             shader.setMat4("model", model);
             //绘制盒子
             glDrawArrays(GL_TRIANGLES, 0, 36);

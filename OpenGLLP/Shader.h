@@ -31,7 +31,7 @@ public:
 
 	void OpenProjection(float radians, float screenWeight, float screenHeight, float near, float far);
 
-	//void OpenView(Camera camera);
+	void OpenView(Camera camera);
 
 private:
 

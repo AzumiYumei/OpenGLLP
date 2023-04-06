@@ -113,4 +113,11 @@ void Shader::OpenProjection(float radians,float screenWeight,float screenHeight,
     projection = glm::perspective(glm::radians(radians), screenWeight / screenHeight, near, far);
     setMat4("projection", projection);
 }
+//
+//void Shader::OpenView(Camera camera)
+//{
+//    glm::mat4 view = glm::mat4(1.0f);
+//    view = camera.GetViewMatrix();
+//    setMat4("view", view);
+//}
 
