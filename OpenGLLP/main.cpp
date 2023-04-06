@@ -1,4 +1,10 @@
 
+
+#define GLEW_STATIC
+#include<GL/glew.h>
+#include<GLFW/glfw3.h>
+
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -12,10 +18,6 @@ using namespace std;
 
 #include<iostream>
 #include<string>
-
-#define GLEW_STATIC
-#include<GL/glew.h>
-#include<GLFW/glfw3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -329,7 +331,7 @@ void main()
         //}
 
 
-        lightShader.use();/*
+        lightShader.use();
         lightShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         lightShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
        
@@ -344,23 +346,7 @@ void main()
             cubePositions[1].z));
         lightShader.setVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
         lightShader.setVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f)); 
-        lightShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));*/
-
-        glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
-        glm::vec3 cameraPos = camera.cameraPosition;
-        glm::vec3 materialSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
-        int materialShininess = 32;
-
-
-        glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 lightPos = glm::vec3(cubePositions[1].x * sin(glfwGetTime()) / 2 + 0.5,
-            cubePositions[1].y * cos(glfwGetTime()) / 2 + 0.5,
-            cubePositions[1].z);
-        glm::vec3 lightAmbinet = glm::vec3(0.2f, 0.2f, 0.2f);
-        glm::vec3 lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-        glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
-
-        Material material(objectColor, cameraPos, materialShininess, materialShininess);
+        lightShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
 
         LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
