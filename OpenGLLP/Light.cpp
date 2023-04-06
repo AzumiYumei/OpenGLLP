@@ -13,6 +13,7 @@ Light::Light(glm::vec3 Color, glm::vec3 Diffuse, glm::vec3 Ambient,
 
 void Light::SimpleLightCaculate(Shader lightShader)
 {
+    lightShader.use();
     lightShader.setVec3("lightColor",this->lightColor );
     lightShader.setVec3("light.position", this->lightPosition);
     lightShader.setVec3("light.ambient", this->lightAmbient);
