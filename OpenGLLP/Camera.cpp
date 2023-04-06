@@ -71,7 +71,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset)
     if (Pitch < LimitLow)
         Pitch = LimitLow;
 
-    cout << Pitch << endl;
+    //cout << Pitch << endl;
 
     updateCameraVectors();
 }
