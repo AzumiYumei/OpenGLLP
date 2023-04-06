@@ -8,6 +8,16 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+enum Camera_Movement {
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT,
+	SHIFT,
+	NONE,
+	SPACE,
+	CONTROL
+};
 
 class Camera
 {
@@ -35,7 +45,7 @@ public:
 
 	glm::mat4 GetViewMatrix();
 	
-	void ProcessKeyboard(string MovemDirection, float deltaTime);
+	void ProcessKeyboard(Camera_Movement MovemDirection, float deltaTime);
 
 	void ProcessMouseMovement(float xoffset, float yoffset);
 
@@ -47,7 +57,7 @@ private:
 		glm::vec3 front;
 		front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
 		front.y = sin(glm::radians(Pitch));
-		front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+		front.z = sin(glm::radians(Yaw))* cos(glm::radians(Pitch));
 		cameraDirection = glm::normalize(front);
 		
 		cameraRight = glm::normalize(glm::cross(cameraDirection, spaceUp));  

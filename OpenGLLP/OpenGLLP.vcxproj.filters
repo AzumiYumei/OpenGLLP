@@ -51,6 +51,10 @@
   <ItemGroup>
     <Text Include="fragment.txt" />
     <Text Include="vertex.txt" />
+    <Text Include="lightFragment.txt" />
+    <Text Include="lightVertex.txt" />
+    <Text Include="cubeVertex.txt" />
+    <Text Include="cubeFragment.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="awesomeface.png">
