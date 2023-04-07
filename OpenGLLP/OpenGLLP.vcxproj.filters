@@ -63,8 +63,8 @@
   <ItemGroup>
     <Text Include="fragment.txt" />
     <Text Include="vertex.txt" />
-    <Text Include="lightFragment.txt" />
-    <Text Include="lightVertex.txt" />
+    <Text Include="lightFragment.frag" />
+    <Text Include="lightVertex.vert" />
     <Text Include="cubeVertex.txt" />
     <Text Include="cubeFragment.txt" />
   </ItemGroup>

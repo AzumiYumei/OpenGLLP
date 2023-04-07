@@ -27,8 +27,9 @@ void Light::SimpleLightCaculate(Shader lightShader)
     lightShader.setVec3("light.diffuse", this->lightDiffuse);
     lightShader.setVec3("light.specular", this->lightSpecular);
     lightShader.setVec3("light.emission", this->lightEmission);
-    lightShader.setVec3("light.direction", this->lightDirection);
+    lightShader.setVec3("light.direction", this->zero);
     lightShader.setFloat("light.constant", this->constant);
     lightShader.setFloat("light.linear", this->linear);
     lightShader.setFloat("light.quadratic", this->quadratic);
 }
+

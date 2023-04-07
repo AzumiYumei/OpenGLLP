@@ -242,7 +242,7 @@ void main()
 
     //创建shader
     Shader shader("vertex.txt", "fragment.txt");
-    Shader lightShader("lightVertex.txt", "lightFragment.txt");//光照shader
+    Shader lightShader("lightVertex.vert", "lightFragment.frag");//光照shader
     Shader cubeShader("cubeVertex.txt","cubeFragment.txt");//发光方块shader
 
     //翻转纹理
@@ -285,6 +285,7 @@ void main()
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_2D, texture5.textureID);
 
+
         glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
         glm::vec3 cameraPos = camera.cameraPosition;
         glm::vec3 materialSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -310,7 +311,7 @@ void main()
         //灯光设定，注意，灯光一定要设置在材质后
         Light light(lightColor, lightDiffuse, lightAmbimet, lightSpecular, lightPos, lightEmission, lightDirection,constant,linear, quadratic);
         light.SimpleLightCaculate(lightShader);
-
+       
 
         LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
         for (int i = 1; i < 6; i++)

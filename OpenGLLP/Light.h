@@ -20,12 +20,12 @@ public:
     glm::vec3 zero = glm::vec3(0.0f,0.0f,0.0f);
     glm::vec3 one = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    glm::vec3 lightColor;
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 lightAmbient;
     glm::vec3 lightDiffuse;
     glm::vec3 lightSpecular;
     glm::vec3 lightPosition;
-    glm::vec3 lightEmission; 
+    glm::vec3 lightEmission = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 lightDirection;
 
     float constant;
