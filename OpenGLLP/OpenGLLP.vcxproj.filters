@@ -30,6 +30,12 @@
     <ClCompile Include="Camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -47,12 +53,18 @@
     <ClInclude Include="stb_image.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragment.txt" />
     <Text Include="vertex.txt" />
-    <Text Include="lightFragment.txt" />
-    <Text Include="lightVertex.txt" />
+    <Text Include="lightFragment.frag" />
+    <Text Include="lightVertex.vert" />
     <Text Include="cubeVertex.txt" />
     <Text Include="cubeFragment.txt" />
   </ItemGroup>
@@ -61,6 +73,15 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="wall.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="container2.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="container2_specular.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="matrix.jpg">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

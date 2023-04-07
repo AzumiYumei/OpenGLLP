@@ -7,6 +7,9 @@ using namespace std;
 class Texture
 {
 public:
+	Texture(string pohtoName, int channlNumber,
+		string WRAP_S, string WRAP_T, string MIN_FILTER, string MAG_FILTER);
+
 	unsigned textureID;
 	string textureName;
 	int channls;
@@ -18,12 +21,8 @@ public:
 	// 设定超出边缘后的颜色
     float borderColor[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
-
-	Texture(string pohtoName,int channlNumber, 
-		string WRAP_S, string WRAP_T , string MIN_FILTER, string MAG_FILTER);
 	void creatTexture();
 	void TexParamete();
-
 private:
 
 };

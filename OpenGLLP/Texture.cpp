@@ -6,24 +6,18 @@
 Texture::Texture(string pohtoName, int channlNumber,
     string WRAPS, string WRAPT, string MINFILTER, string MAGFILTER)
 {
-	textureName = pohtoName;
-	channls = channlNumber;
+	this->textureName = pohtoName;
+	this->channls = channlNumber;
 
-    string WRAP_S=WRAPS;
-    string WRAP_T=WRAPT;
-    string MIN_FILTER=MINFILTER;
-    string MAG_FILTER=MAGFILTER;
+    this->WRAP_S=WRAPS;
+    this->WRAP_T=WRAPT;
+    this->MIN_FILTER=MINFILTER;
+    this->MAG_FILTER=MAGFILTER;
 
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
     // 为当前绑定的纹理对象设置环绕、过滤方式
-    //TexParamete();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
- 
+    TexParamete();
     creatTexture();
 }
 
@@ -101,3 +95,4 @@ void Texture::creatTexture()
     stbi_image_free(data);
 
 }
+
