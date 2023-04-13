@@ -13,11 +13,10 @@
 class Material
 {
 public:
-	Material(glm::vec3 objectColor,glm::vec3 cameraPos,glm::vec3 specular,int shininess);
+	Material(glm::vec3 objectColor,glm::vec3 specular,int shininess);
 
 
     glm::vec3 objectColor;
-    glm::vec3 cameraPos;
     glm::vec3 materialAmbient;
     glm::vec3 materialDiffuse;
     glm::vec3 materialSpecular;

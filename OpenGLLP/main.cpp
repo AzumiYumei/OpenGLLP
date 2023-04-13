@@ -20,8 +20,8 @@ using namespace std;
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-int screenWeight = 600;
-int screenHeight = 600;
+int screenWeight = 1200;
+int screenHeight = 1200;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -88,6 +88,13 @@ glm::vec3 cubePositions[] = {
         glm::vec3(1.5f,  2.0f, -2.5f),
         glm::vec3(1.5f,  0.2f, -1.5f),
         glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
+glm::vec3 pointLightPositions[] = {
+    glm::vec3(0.7f,  0.2f,  2.0f),
+    glm::vec3(2.3f, -3.3f, -4.0f),
+    glm::vec3(-4.0f,  2.0f, -12.0f),
+    glm::vec3(0.0f,  0.0f, -3.0f)
 };
 
 //创建摄像机
@@ -162,6 +169,97 @@ void LoopRanden(Shader shader, unsigned int VAO, float near, float far)
     glBindVertexArray(VAO);
 }
 
+glm::vec3 TranslateV3(glm::vec3 position,int mode)
+{
+    glm::vec3 trans;
+    if (mode == 1)//绕z轴旋转
+    {
+            trans= glm::vec3(position.x * sin(glfwGetTime()) / 2 + 0.5,
+            position.y * cos(glfwGetTime()) / 2 + 0.5, position.z);
+    }
+    else if (mode == 2)//绕y轴旋转
+    {
+        trans = glm::vec3(position.x * sin(glfwGetTime()) / 2 + 0.5,
+            position.y, position.z * cos(glfwGetTime()) / 2 + 0.5);
+    }
+    else if (mode == 3)//绕x轴旋转
+    {
+        trans = glm::vec3(position.x 
+            ,position.y * sin(glfwGetTime()) / 2 + 0.5,
+            position.z * cos(glfwGetTime()) / 2 + 0.5);
+    }
+    
+    return trans;
+}
+
+glm::mat4 TranslateM4(glm::vec3 position, int mode)
+{
+    glm::mat4 model = glm::mat4(1.0f);
+    if (mode == 1)//绕z轴旋转
+    {
+        model = glm::translate(model, glm::vec3(position.x * sin(glfwGetTime()) / 2 + 0.5,
+            position.y * cos(glfwGetTime()) / 2 + 0.5, position.z));
+    }
+    else if (mode == 2)//绕y轴旋转
+    {
+        model = glm::translate(model, glm::vec3(position.x * sin(glfwGetTime()) / 2 + 0.5,
+            position.y, position.z * cos(glfwGetTime()) / 2 + 0.5));
+    }
+    else if (mode == 3)//绕x轴旋转
+    {
+        model = glm::translate(model, glm::vec3(position.x ,
+            position.y * sin(glfwGetTime()) / 2 + 0.5, 
+            position.z * cos(glfwGetTime()) / 2 + 0.5));
+    }
+
+    return model;
+}
+
+void textNotLighting(Shader shader,unsigned int VAO)
+{
+    shader.use();
+    LoopRanden(shader, VAO, 0.1f, 100.0f);
+    for (int i = 1; i < 10; i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+}
+
+Light CreateLight()
+{
+    glm::vec3 cameraPos = camera.cameraPosition;
+
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+    glm::vec3 lightAmbimet = glm::vec3(0.5f, 0.5f, 0.5f);
+    glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 lightEmission = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 lightDirection = glm::vec3(-0.2f, -1.0f, -0.3f);
+    float constant = 1.0f;
+    float linear = 0.027;
+    float quadratic = 0.0028;
+    
+    glm::vec3 lightPos = TranslateV3(pointLightPositions[1],3);
+
+    Light light(cameraPos, lightDiffuse, lightAmbimet, lightSpecular, 
+        lightPos, lightEmission, lightDirection, constant, linear, quadratic);
+
+    return light;
+}
+
+Material CreateMaterial()
+{
+    glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
+    glm::vec3 materialSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
+    int materialShininess = 32;
+
+    Material material(objectColor, materialSpecular, materialShininess);
+
+    return material;
+}
+
 void main()
 {
 #pragma region WindowCrate&Init
@@ -213,11 +311,11 @@ void main()
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    ////设置顶点指针
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(1);
+    //设置顶点指针
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
 
     glGenVertexArrays(1, &lightVAO);
@@ -286,48 +384,29 @@ void main()
         glBindTexture(GL_TEXTURE_2D, texture5.textureID);
 
 
-        glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
-        glm::vec3 cameraPos = camera.cameraPosition;
-        glm::vec3 materialSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
-        int materialShininess = 32;
-
-
-        glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-        glm::vec3 lightAmbimet = glm::vec3(0.2f, 0.2f, 0.2f);
-        glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 lightEmission = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 lightDirection = glm::vec3(-0.2f, -1.0f, -0.3f);
-        float constant= 1.0f;
-        float linear= 0.027;
-        float quadratic= 0.0028;
-        glm::vec3 lightPos = glm::vec3(cubePositions[1].x * sin(glfwGetTime()) / 2 + 0.5,
-            cubePositions[1].y * cos(glfwGetTime()) / 2 + 0.5, cubePositions[1].z);
-
         //材质设定
-        Material material(objectColor, camera.cameraPosition, materialSpecular, materialShininess);
+        Material material = CreateMaterial();
         material.SimpleMaterialCaculate(lightShader);
 
         //灯光设定，注意，灯光一定要设置在材质后
-        Light light(lightColor, lightDiffuse, lightAmbimet, lightSpecular, lightPos, lightEmission, lightDirection,constant,linear, quadratic);
-        light.SimpleLightCaculate(lightShader);
-       
+        Light light = CreateLight();
+        light.PointLightCaculate(lightShader);
 
+       
         LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
-        for (int i = 1; i < 6; i++)
+        for (int i = 1; i < 10; i++)
         {
              glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+            model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
             lightShader.setMat4("model", model);
+            shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
 
         LoopRanden(cubeShader, cubeVAO, 0.1f, 100.0f);
-        glm::mat4 model1 = glm::mat4(1.0f);
-        model1 = glm::translate(model1, glm::vec3(cubePositions[1].x * sin(glfwGetTime()) / 2 + 0.5,
-            cubePositions[1].y * cos(glfwGetTime()) / 2 + 0.5,cubePositions[1].z));
+        glm::mat4 model1 = TranslateM4(pointLightPositions[light.pointLightNumber], 3);
         cubeShader.setMat4("model", model1);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         
