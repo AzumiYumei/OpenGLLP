@@ -97,6 +97,52 @@ glm::vec3 pointLightPositions[] = {
     glm::vec3(0.0f,  0.0f, -3.0f)
 };
 
+
+glm::vec3 lightData[] = {
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(-0.2f, -1.0f, -0.3f),
+    glm::vec3(1.0f,0.027f,0.0028f)
+};
+
+glm::vec3 pointLightData[] = {
+    glm::vec3(0.7f,  0.2f,  2.0f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(-0.2f, -1.0f, -0.3f),
+    glm::vec3(1.0f,0.027f,0.0028f),
+
+    glm::vec3(2.3f, -3.3f, -4.0f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(-0.2f, -1.0f, -0.3f),
+    glm::vec3(1.0f,0.027f,0.0028f),
+
+    glm::vec3(-4.0f,  2.0f, -12.0f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(-0.2f, -1.0f, -0.3f),
+    glm::vec3(1.0f,0.027f,0.0028f),
+
+    glm::vec3(0.0f,  0.0f, -3.0f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(-0.2f, -1.0f, -0.3f),
+    glm::vec3(1.0f,0.027f,0.0028f)
+};//28
+//计算点光源数量
+int pointLightNumber = sizeof(pointLightData) / sizeof(glm::vec3)/7;
+
 //创建摄像机
 Camera camera(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f,45.0f);
 //单位帧时间差
@@ -211,6 +257,13 @@ glm::mat4 TranslateM4(glm::vec3 position, int mode)
             position.y * sin(glfwGetTime()) / 2 + 0.5, 
             position.z * cos(glfwGetTime()) / 2 + 0.5));
     }
+    else if (mode == 4)//缩放
+    {
+        model = glm::translate(model, glm::vec3(position.x,
+            position.y * sin(glfwGetTime()) / 2 + 0.5,
+            position.z * cos(glfwGetTime()) / 2 + 0.5));
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+    }
 
     return model;
 }
@@ -227,27 +280,30 @@ void textNotLighting(Shader shader,unsigned int VAO)
     }
 }
 
-Light CreateLight()
+//替换light的信息
+void InsertLight(Shader shader,Light &light,glm::vec3 data[])
 {
-    glm::vec3 cameraPos = camera.cameraPosition;
+    int skip = light.pointLightNumber;
+    skip *= 7;
+    //cout << skip<<endl;
 
-    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-    glm::vec3 lightAmbimet = glm::vec3(0.5f, 0.5f, 0.5f);
-    glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightEmission = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightDirection = glm::vec3(-0.2f, -1.0f, -0.3f);
-    float constant = 1.0f;
-    float linear = 0.027;
-    float quadratic = 0.0028;
-    
-    glm::vec3 lightPos = TranslateV3(pointLightPositions[1],3);
+    light.cameraPos = camera.cameraPosition;
 
-    Light light(cameraPos, lightDiffuse, lightAmbimet, lightSpecular, 
-        lightPos, lightEmission, lightDirection, constant, linear, quadratic);
+    light.lightPosition= TranslateV3(data[0+skip], 3);//根据光盒位置生成光
 
-    return light;
+    light.lightDiffuse = glm::vec3(data[1 + skip]);
+    light.lightAmbient = glm::vec3(data[2 + skip]);
+    light.lightSpecular = glm::vec3(data[3 + skip]);
+    light.lightEmission = glm::vec3(data[4 + skip]);
+    light.lightDirection = glm::vec3(data[5 + skip]);
+
+    light.constant = data[6 + skip].x;
+    light.linear = data[6 + skip].y;
+    light.quadratic = data[6 + skip].z;
+    light.PointLightCaculate(shader);
+    //cout << light.pointLightNumber << endl;
 }
+
 
 Material CreateMaterial()
 {
@@ -389,10 +445,13 @@ void main()
         material.SimpleMaterialCaculate(lightShader);
 
         //灯光设定，注意，灯光一定要设置在材质后
-        Light light = CreateLight();
-        light.PointLightCaculate(lightShader);
+        Light light;
+        //InsertLight(lightShader,light,lightData);//将当前light存入的信息给fragment
+        InsertLight(lightShader, light, pointLightData);//将当前light存入的信息给fragment
+        //InsertLight(lightShader, light, pointLightData);//将当前light存入的信息给fragment
 
-       
+
+       //创建盒子
         LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
         for (int i = 1; i < 10; i++)
         {
@@ -400,16 +459,21 @@ void main()
             model = glm::translate(model, cubePositions[i]);
             model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
             lightShader.setMat4("model", model);
-            shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-
+        //创建光盒
         LoopRanden(cubeShader, cubeVAO, 0.1f, 100.0f);
-        glm::mat4 model1 = TranslateM4(pointLightPositions[light.pointLightNumber], 3);
-        cubeShader.setMat4("model", model1);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        
+        for (int i = 0; i < light.pointLightNumber; i++)//根据点光的生成数量和生成位置相应的生成光盒
+        {
+            glm::mat4 model;
+            model = TranslateM4(pointLightData[i * 7], 4);
+
+            cubeShader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        //cout << light.pointLightNumber << endl;
+
         //交换缓冲
         glfwSwapBuffers(window);
         glfwPollEvents();

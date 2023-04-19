@@ -13,6 +13,7 @@
 class Light
 {
 public:
+    Light(){}
     Light(glm::vec3 cameraPos,glm::vec3 Diffuse, glm::vec3 Ambient,
         glm::vec3 Specular, glm::vec3 Position, glm::vec3 Emission, glm::vec3 lightDirection,
         float constant, float linear, float quadratic);
@@ -22,12 +23,12 @@ public:
     glm::vec3 lightDiffuse;
     glm::vec3 lightSpecular;
     glm::vec3 lightPosition;
-    glm::vec3 lightEmission = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 lightEmission;
     glm::vec3 lightDirection;
 
-    float constant;
-    float linear;
-    float quadratic;
+    float constant=0;
+    float linear=0;
+    float quadratic=0;
 
     int pointLightNumber = 0;
     int directionLightNumber = 0;

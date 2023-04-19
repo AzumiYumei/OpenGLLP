@@ -20,6 +20,7 @@ Light::Light(glm::vec3 cameraPos,glm::vec3 Diffuse, glm::vec3 Ambient,
     
 }
 
+
 void Light::PointLightCaculate(Shader lightShader)
 {
     this->pointLightNumber++;
