@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include"Shader.h"
+#include"Camera.h"
 
 
 class Light
@@ -35,6 +36,7 @@ public:
     int spotLightNumber = 0;
 
     void PointLightCaculate(Shader lightShader);
+    void InsertLight(Shader shader, Camera camera, glm::vec3 data[]);
 
 };
 

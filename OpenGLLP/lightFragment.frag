@@ -74,14 +74,13 @@ in vec3 FragPos;
 in vec2 TexCoords;
 
 vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 FragPos);
-vec3 DiffuseFunction(DirLight light,vec3 Normal,Material material,vec3 FragPos);
-vec3 SpecularFunction(SpotLight light,vec3 Normal,Material material,vec3 FragPos);
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 
 void main()
 {
     vec3 result;
     //平行光
-//    //vec3 lightDir = normalize(-light.direction);
+    result = CalcDirLight(dirLight, Normal, cameraPos);
     for(int i=0;i<PointLightNumber;i++)
         result += PointLightFunction( pointLights[i], Normal, material , FragPos);
 
@@ -119,5 +118,20 @@ vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 Frag
     vec3 result=ambient + diffuse + specular;
         
     return result;
+}
+
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 cameraPos)
+{
+    vec3 lightDir = normalize(-light.direction);
+    // 漫反射着色
+    float diff = max(dot(normal, lightDir), 0.0);
+    // 镜面光着色
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(cameraPos, reflectDir), 0.0), material.shininess);
+    // 合并结果
+    vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
+    vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+    return (ambient + diffuse + specular);
 }
 

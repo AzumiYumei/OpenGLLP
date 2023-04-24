@@ -31,6 +31,8 @@ bool isFirstOpen = true;
 float lastX = screenWeight / 2.0f;
 float lastY = screenHeight / 2.0f;
 
+#define Stength 0.2f
+
 //顶点与法向数组
 float vertices[] = {
     // positions          // normals           // texture coords
@@ -97,7 +99,6 @@ glm::vec3 pointLightPositions[] = {
     glm::vec3(0.0f,  0.0f, -3.0f)
 };
 
-
 glm::vec3 lightData[] = {
     glm::vec3(0.5f, 0.5f, 0.5f),
     glm::vec3(0.5f, 0.5f, 0.5f),
@@ -109,16 +110,16 @@ glm::vec3 lightData[] = {
 
 glm::vec3 pointLightData[] = {
     glm::vec3(0.7f,  0.2f,  2.0f),
-    glm::vec3(0.5f, 0.5f, 0.5f),
-    glm::vec3(0.5f, 0.5f, 0.5f),
+    glm::vec3(Stength, Stength, Stength),
+    glm::vec3(Stength, Stength, Stength),
     glm::vec3(1.0f, 1.0f, 1.0f),
     glm::vec3(1.0f, 1.0f, 1.0f),
     glm::vec3(-0.2f, -1.0f, -0.3f),
-    glm::vec3(1.0f,0.027f,0.0028f),
+    glm::vec3(1.0f,0.09f,0.032f),
 
     glm::vec3(2.3f, -3.3f, -4.0f),
-    glm::vec3(0.5f, 0.5f, 0.5f),
-    glm::vec3(0.5f, 0.5f, 0.5f),
+  glm::vec3(Stength, Stength, Stength),
+    glm::vec3(Stength, Stength, Stength),
     glm::vec3(1.0f, 1.0f, 1.0f),
     glm::vec3(1.0f, 1.0f, 1.0f),
     glm::vec3(-0.2f, -1.0f, -0.3f),
@@ -215,29 +216,6 @@ void LoopRanden(Shader shader, unsigned int VAO, float near, float far)
     glBindVertexArray(VAO);
 }
 
-glm::vec3 TranslateV3(glm::vec3 position,int mode)
-{
-    glm::vec3 trans;
-    if (mode == 1)//绕z轴旋转
-    {
-            trans= glm::vec3(position.x * sin(glfwGetTime()) / 2 + 0.5,
-            position.y * cos(glfwGetTime()) / 2 + 0.5, position.z);
-    }
-    else if (mode == 2)//绕y轴旋转
-    {
-        trans = glm::vec3(position.x * sin(glfwGetTime()) / 2 + 0.5,
-            position.y, position.z * cos(glfwGetTime()) / 2 + 0.5);
-    }
-    else if (mode == 3)//绕x轴旋转
-    {
-        trans = glm::vec3(position.x 
-            ,position.y * sin(glfwGetTime()) / 2 + 0.5,
-            position.z * cos(glfwGetTime()) / 2 + 0.5);
-    }
-    
-    return trans;
-}
-
 glm::mat4 TranslateM4(glm::vec3 position, int mode)
 {
     glm::mat4 model = glm::mat4(1.0f);
@@ -279,31 +257,6 @@ void textNotLighting(Shader shader,unsigned int VAO)
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 }
-
-//替换light的信息
-void InsertLight(Shader shader,Light &light,glm::vec3 data[])
-{
-    int skip = light.pointLightNumber;
-    skip *= 7;
-    //cout << skip<<endl;
-
-    light.cameraPos = camera.cameraPosition;
-
-    light.lightPosition= TranslateV3(data[0+skip], 3);//根据光盒位置生成光
-
-    light.lightDiffuse = glm::vec3(data[1 + skip]);
-    light.lightAmbient = glm::vec3(data[2 + skip]);
-    light.lightSpecular = glm::vec3(data[3 + skip]);
-    light.lightEmission = glm::vec3(data[4 + skip]);
-    light.lightDirection = glm::vec3(data[5 + skip]);
-
-    light.constant = data[6 + skip].x;
-    light.linear = data[6 + skip].y;
-    light.quadratic = data[6 + skip].z;
-    light.PointLightCaculate(shader);
-    //cout << light.pointLightNumber << endl;
-}
-
 
 Material CreateMaterial()
 {
@@ -447,8 +400,9 @@ void main()
         //灯光设定，注意，灯光一定要设置在材质后
         Light light;
         //InsertLight(lightShader,light,lightData);//将当前light存入的信息给fragment
-        InsertLight(lightShader, light, pointLightData);//将当前light存入的信息给fragment
-        //InsertLight(lightShader, light, pointLightData);//将当前light存入的信息给fragment
+        light.InsertLight(lightShader, camera, pointLightData);//将当前light存入的信息给fragment
+        light.InsertLight(lightShader, camera, pointLightData);//将当前light存入的信息给fragment
+
 
 
        //创建盒子
@@ -468,6 +422,7 @@ void main()
         {
             glm::mat4 model;
             model = TranslateM4(pointLightData[i * 7], 4);
+
 
             cubeShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
