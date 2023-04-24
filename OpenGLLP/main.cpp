@@ -97,7 +97,6 @@ glm::vec3 pointLightPositions[] = {
     glm::vec3(0.0f,  0.0f, -3.0f)
 };
 
-
 glm::vec3 lightData[] = {
     glm::vec3(0.5f, 0.5f, 0.5f),
     glm::vec3(0.5f, 0.5f, 0.5f),
@@ -142,6 +141,8 @@ glm::vec3 pointLightData[] = {
 };//28
 //计算点光源数量
 int pointLightNumber = sizeof(pointLightData) / sizeof(glm::vec3)/7;
+
+
 
 //创建摄像机
 Camera camera(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f,45.0f);
