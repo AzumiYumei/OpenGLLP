@@ -29,12 +29,11 @@ public:
     void Draw(Shader shader);
 private:
     /*  模型数据  */
-    vector<Mesh> meshes;
+    vector<Mesh> meshes;//创建关于类Mesh的数组
     string directory;
     /*  函数   */
     void loadModel(string path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
-        string typeName);
+    vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,string typeName);
 };

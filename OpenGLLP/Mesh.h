@@ -41,6 +41,7 @@ public:
     vector<Texture> textures;
     /*  函数  */
     Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+    //网格渲染函数，之后加载的模型信息直接使用这个函数渲染
     void Draw(Shader shader);
 private:
     /*  渲染数据  */

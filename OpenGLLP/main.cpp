@@ -260,7 +260,7 @@ glm::mat4 TranslateM4(glm::vec3 position, int mode)
     return model;
 }
 
-//替换light的信息
+//light的信息
 void InsertLight(Shader shader,Light &light,glm::vec3 data[])
 {
     int skip = light.pointLightNumber;
@@ -280,7 +280,6 @@ void InsertLight(Shader shader,Light &light,glm::vec3 data[])
     light.linear = data[6 + skip].y;
     light.quadratic = data[6 + skip].z;
     light.PointLightCaculate(shader);
-    //cout << light.pointLightNumber << endl;
 }
 
 void main()
@@ -317,6 +316,7 @@ void main()
 
     //打开深度测试
     glEnable(GL_DEPTH_TEST);
+
 #pragma region VAO&VBO&EBOBind
 
     //设置VAO、VBO、EBO、光照VAO
@@ -362,7 +362,6 @@ void main()
 #pragma endregion
 
     //创建shader
-    Shader shader("vertex.txt", "fragment.txt");
     Shader lightShader("lightVertex.vert", "lightFragment.frag");//光照shader
     Shader cubeShader("cubeVertex.txt","cubeFragment.txt");//发光方块shader
 
@@ -378,10 +377,6 @@ void main()
 
     
     //将贴图传递进fragment的uniform中
-    shader.use();
-    shader.setInt("texture1", 0);
-    shader.setInt("texture2", 1);
-
     lightShader.use();
     lightShader.setInt("material.diffuse", 2);
     lightShader.setInt("material.specular", 3);
@@ -413,12 +408,12 @@ void main()
 
         
         Light light;
-        //InsertLight(lightShader,light,lightData);//将当前light存入的信息给fragment
+        //每次使用这个函数就会新增一个光照，但是前提是存在这个光照的信息
         InsertLight(lightShader, light, pointLightData);//将当前light存入的信息给fragment
-        //InsertLight(lightShader, light, pointLightData);//将当前light存入的信息给fragment
 
 
-       //创建盒子
+        //创建盒子
+        //渲染部分一
         LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
         for (int i = 1; i < 10; i++)
         {
@@ -426,6 +421,7 @@ void main()
             model = glm::translate(model, cubePositions[i]);
             model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
             lightShader.setMat4("model", model);
+            //渲染部分二
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
@@ -439,7 +435,6 @@ void main()
             cubeShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-        //cout << light.pointLightNumber << endl;
 
         //交换缓冲
         glfwSwapBuffers(window);

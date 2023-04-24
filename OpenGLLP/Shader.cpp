@@ -94,6 +94,7 @@ void Shader:: CheckCode(unsigned int id, string name)
     }
 }
 
+//链接fragment用uniform用的函数
 void Shader::setInt(const string& name, int value) 
 {
     glUniform1i(glGetUniformLocation(shaderID, name.c_str()), value);
@@ -111,14 +112,14 @@ void Shader::setVec3(const string& name, const glm::vec3& vec3)
     glUniform3fv(glGetUniformLocation(shaderID, name.c_str()), 1, &vec3[0]);
 }
 
-
+//开启透视
 void Shader::OpenProjection(Camera camera,float screenWeight,float screenHeight,float near,float far)
 {
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), screenWeight / screenHeight, near, far);
     setMat4("projection", projection);
 }
 
-
+//开启视图
 void Shader::OpenView(Camera camera)
 {
     glm::mat4 view = camera.GetViewMatrix();
