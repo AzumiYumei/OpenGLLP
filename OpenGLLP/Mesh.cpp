@@ -9,7 +9,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
     setupMesh();
 }
 
-void Mesh::setupMesh()
+void Mesh::setupMesh()//数据绑定
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -37,7 +37,7 @@ void Mesh::setupMesh()
     glBindVertexArray(0);
 }
 
-void Mesh::Draw(Shader shader)
+void Mesh::Draw(Shader shader)// 渲染模块
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
@@ -48,11 +48,11 @@ void Mesh::Draw(Shader shader)
         // 获取纹理序号（diffuse_textureN 中的 N）
         string number;
         string name = textures[i].type;
-        if (name == "texture_diffuse")
+        if (name == "diffuse")
             number = std::to_string(diffuseNr++);
-        else if (name == "texture_specular")
+        else if (name == "specular")
             number = std::to_string(specularNr++);
-
+        //第一份materia贴图看起来是这样的   material.diffuse1
         shader.setInt(("material." + name + number).c_str(), i);
        
         glBindTexture(GL_TEXTURE_2D, textures[i].id);

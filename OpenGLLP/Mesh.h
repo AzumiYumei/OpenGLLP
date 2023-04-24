@@ -13,11 +13,8 @@ using namespace std;
 #include<iostream>
 #include<string>
 #include<vector>
-
 #include"Shader.h"
-
 #include"Texture.h"
-
 
 //生成储存网格顶点信息和贴图信息的结构体
 #pragma region  AssimpAndMeshData
@@ -34,7 +31,6 @@ struct Texture {
 };
 
 #pragma endregion
-
 
 class Mesh
 {

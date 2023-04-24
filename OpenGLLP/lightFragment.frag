@@ -2,10 +2,16 @@
 out vec4 FragColor;
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
-    sampler2D emission;
-    float shininess;
+//由贴图控制的
+    sampler2D diffuse1;
+    sampler2D specular1;
+    sampler2D emission1;
+
+    //由静态数据控制的，目前还未应用
+    vec3 diffuse;
+    vec3 specular;
+    vec3 emission;
+    float shininess1;
 }; 
 
 struct Light {
@@ -81,7 +87,7 @@ void main()
 {
     vec3 result;
     //平行光
-//    //vec3 lightDir = normalize(-light.direction);
+    //vec3 lightDir = normalize(-light.direction);
     for(int i=0;i<PointLightNumber;i++)
         result += PointLightFunction( pointLights[i], Normal, material , FragPos);
 
