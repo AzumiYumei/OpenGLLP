@@ -13,6 +13,7 @@
 class Material
 {
 public:
+
 	Material(glm::vec3 objectColor,glm::vec3 specular,int shininess);
 
 

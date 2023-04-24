@@ -2,9 +2,15 @@
 out vec4 FragColor;
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
-    sampler2D emission;
+//由贴图控制的
+    sampler2D diffuse1;
+    sampler2D specular1;
+    sampler2D emission1;
+
+    //由静态数据控制的，目前还未应用
+    vec3 diffuse;
+    vec3 specular;
+    vec3 emission;
     float shininess;
 }; 
 
@@ -102,11 +108,11 @@ vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 Frag
 
 
     //将漫反射的颜色（一般与物体颜色一致），乘于diff，乘于贴图的rgb颜色，得到漫反射
-    vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
+    vec3 diffuse = light.diffuse * diff * texture(material.diffuse1, TexCoords).rgb;
     // 环境光,使用贴图的rgb计算环境光
-    vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
+    vec3 ambient = light.ambient * texture(material.diffuse1, TexCoords).rgb;
     //将反射光的颜色（一般与光源颜色一致），乘于高光大小，乘于贴图的rgb颜色，得到镜面反射
-    vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
+    vec3 specular = light.specular * spec * texture(material.specular1, TexCoords).rgb;
 
     //衰减
     float distance    = length(light.position - FragPos);
@@ -114,6 +120,7 @@ vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 Frag
     ambient  *= attenuation;  
     diffuse   *= attenuation;
     specular *= attenuation;   
+    //这里并没有使用自发光
     //将三者的反射光叠加在一起得到最终的经验模型
     vec3 result=ambient + diffuse + specular;
         

@@ -79,6 +79,7 @@ float vertices[] = {
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 };
 
+//测试盒子位置信息
 glm::vec3 cubePositions[] = {
         glm::vec3(0.0f,  0.0f,  0.0f),
         glm::vec3(2.0f,  5.0f, -15.0f),
@@ -92,22 +93,7 @@ glm::vec3 cubePositions[] = {
         glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-glm::vec3 pointLightPositions[] = {
-    glm::vec3(0.7f,  0.2f,  2.0f),
-    glm::vec3(2.3f, -3.3f, -4.0f),
-    glm::vec3(-4.0f,  2.0f, -12.0f),
-    glm::vec3(0.0f,  0.0f, -3.0f)
-};
-
-glm::vec3 lightData[] = {
-    glm::vec3(0.5f, 0.5f, 0.5f),
-    glm::vec3(0.5f, 0.5f, 0.5f),
-    glm::vec3(1.0f, 1.0f, 1.0f),
-    glm::vec3(1.0f, 1.0f, 1.0f),
-    glm::vec3(-0.2f, -1.0f, -0.3f),
-    glm::vec3(1.0f,0.027f,0.0028f)
-};
-
+//点光源信息数组
 glm::vec3 pointLightData[] = {
     glm::vec3(0.7f,  0.2f,  2.0f),
     glm::vec3(Stength, Stength, Stength),
@@ -143,6 +129,13 @@ glm::vec3 pointLightData[] = {
 };//28
 //计算点光源数量
 int pointLightNumber = sizeof(pointLightData) / sizeof(glm::vec3)/7;
+
+//材质球静态属性
+glm::vec3 StaticMaterialData[] = {
+    glm::vec3(1.0f, 0.5f, 0.31f),//材质（漫反射+环境光）颜色
+    glm::vec3(0.5f, 0.5f, 0.5f),//材质镜面反射
+    glm::vec3(32.0f, 0.0f, 0.0f)//高光度，后面的两个维度是无意义的
+};
 
 //创建摄像机
 Camera camera(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.5f, 0.05f, 3.0f, -80.0f, 80.0f,45.0f);
@@ -303,6 +296,7 @@ void main()
 
     //打开深度测试
     glEnable(GL_DEPTH_TEST);
+
 #pragma region VAO&VBO&EBOBind
 
     //设置VAO、VBO、EBO、光照VAO
@@ -348,7 +342,6 @@ void main()
 #pragma endregion
 
     //创建shader
-    Shader shader("vertex.txt", "fragment.txt");
     Shader lightShader("lightVertex.vert", "lightFragment.frag");//光照shader
     Shader cubeShader("cubeVertex.txt","cubeFragment.txt");//发光方块shader
 
@@ -364,10 +357,6 @@ void main()
 
     
     //将贴图传递进fragment的uniform中
-    shader.use();
-    shader.setInt("texture1", 0);
-    shader.setInt("texture2", 1);
-
     lightShader.use();
     lightShader.setInt("material.diffuse", 2);
     lightShader.setInt("material.specular", 3);
@@ -394,10 +383,10 @@ void main()
 
 
         //材质设定
-        Material material = CreateMaterial();
+        Material material(StaticMaterialData[0],StaticMaterialData[1],StaticMaterialData[2].x);
         material.SimpleMaterialCaculate(lightShader);
 
-        //灯光设定，注意，灯光一定要设置在材质后
+        
         Light light;
         //InsertLight(lightShader,light,lightData);//将当前light存入的信息给fragment
         light.InsertLight(lightShader, camera, pointLightData);//将当前light存入的信息给fragment
@@ -405,7 +394,8 @@ void main()
 
 
 
-       //创建盒子
+        //创建盒子
+        //渲染部分一
         LoopRanden(lightShader, lightVAO, 0.1f, 100.0f);
         for (int i = 1; i < 10; i++)
         {
@@ -413,6 +403,7 @@ void main()
             model = glm::translate(model, cubePositions[i]);
             model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
             lightShader.setMat4("model", model);
+            //渲染部分二
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
@@ -427,7 +418,6 @@ void main()
             cubeShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-        //cout << light.pointLightNumber << endl;
 
         //交换缓冲
         glfwSwapBuffers(window);
