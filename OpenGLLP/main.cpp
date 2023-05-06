@@ -12,6 +12,7 @@
 #include"Texture.h"
 #include"Light.h"
 #include"Material.h"
+#include"ObjLoad.h"
 using namespace std;
 
 #include<iostream>
@@ -297,10 +298,13 @@ void main()
     //打开深度测试
     glEnable(GL_DEPTH_TEST);
 
+    //加载obj文件数组
+    ObjLoad ball("ball.obj");
+
 #pragma region VAO&VBO&EBOBind
 
     //设置VAO、VBO、EBO、光照VAO
-    unsigned int VAO, VBO, EBO, lightVAO ,cubeVAO;
+    unsigned int VAO, VBO, lightVAO ,cubeVAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -308,18 +312,14 @@ void main()
     glBindVertexArray(VAO);
     //绑定顶点缓冲对象
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //将顶点数组储存到顶点缓冲中
+    //将顶点数组储存到VAO顶点缓冲中
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    /*
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(Vertex), &data[0], GL_STATIC_DRAW);
 
-    //设置顶点指针
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);  
+    */
 
     glGenVertexArrays(1, &lightVAO);
     glBindVertexArray(lightVAO);
@@ -354,12 +354,17 @@ void main()
     Texture texture3("container2.png", 4, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
     Texture texture4("container2_specular.png", 4, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
     Texture texture5("matrix.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture texture6("2k_mars.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture texture7("2k_mercury.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture texture8("2k_stars_milky_way.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture texture9("2k_sun.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture texture10("2k_venus_surface.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
 
     
     //将贴图传递进fragment的uniform中
     lightShader.use();
-    lightShader.setInt("material.diffuse", 2);
-    lightShader.setInt("material.specular", 3);
+    lightShader.setInt("material.diffuse1", 2);
+    lightShader.setInt("material.specular1", 3);
     lightShader.setInt("material.emission", 4);
 
     while (!glfwWindowShouldClose(window))
@@ -380,6 +385,10 @@ void main()
         glBindTexture(GL_TEXTURE_2D, texture4.textureID);
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_2D, texture5.textureID);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, texture6.textureID);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, texture7.textureID);
 
 
         //材质设定

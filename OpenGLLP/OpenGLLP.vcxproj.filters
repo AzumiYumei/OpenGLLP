@@ -24,9 +24,6 @@
     <ClCompile Include="Texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -36,7 +33,7 @@
     <ClCompile Include="Material.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="ObjLoad.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,9 +47,6 @@
     <ClInclude Include="Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -62,17 +56,21 @@
     <ClInclude Include="Material.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="ObjLoad.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="fragment.txt" />
-    <Text Include="vertex.txt" />
     <Text Include="lightFragment.frag" />
     <Text Include="lightVertex.vert" />
     <Text Include="cubeVertex.txt" />
     <Text Include="cubeFragment.txt" />
+    <Text Include="ball.obj">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="InverseBall.obj">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="awesomeface.png">
@@ -88,6 +86,21 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="matrix.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="2k_mars.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="2k_mercury.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="2k_stars_milky_way.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="2k_sun.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="2k_venus_surface.jpg">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
