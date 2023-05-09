@@ -142,7 +142,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Material.cpp" />
     <ClCompile Include="ObjLoad.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -150,7 +149,6 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Light.h" />
-    <ClInclude Include="Material.h" />
     <ClInclude Include="ObjLoad.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
@@ -163,14 +161,21 @@
     <Text Include="lightVertex.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="2k_jupiter.jpg" />
     <Image Include="2k_mars.jpg" />
     <Image Include="2k_mercury.jpg" />
+    <Image Include="2k_moon.jpg" />
+    <Image Include="2k_neptune.jpg" />
+    <Image Include="2k_saturn.jpg" />
     <Image Include="2k_stars_milky_way.jpg" />
     <Image Include="2k_sun.jpg" />
+    <Image Include="2k_uranus.jpg" />
     <Image Include="2k_venus_surface.jpg" />
     <Image Include="awesomeface.png" />
+    <Image Include="black.png" />
     <Image Include="container2.png" />
     <Image Include="container2_specular.png" />
+    <Image Include="earth.jpeg" />
     <Image Include="matrix.jpg" />
     <Image Include="wall.jpg" />
   </ItemGroup>

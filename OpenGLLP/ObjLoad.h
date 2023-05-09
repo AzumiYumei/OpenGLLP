@@ -11,6 +11,7 @@ class ObjLoad
 public:
 	ObjLoad(string objName);
 	string obj;
+	int triangleSize;
 	vector<float> vertexArr;
 	vector<float> Load();
 };

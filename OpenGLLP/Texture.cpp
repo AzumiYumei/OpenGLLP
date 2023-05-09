@@ -3,9 +3,10 @@
 
 
 
-Texture::Texture(string pohtoName, int channlNumber,
+Texture::Texture(int number,string pohtoName, int channlNumber,
     string WRAPS, string WRAPT, string MINFILTER, string MAGFILTER)
 {
+    this->number = number;
 	this->textureName = pohtoName;
 	this->channls = channlNumber;
 
@@ -93,6 +94,9 @@ void Texture::creatTexture()
         cout << "Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
+
+    glActiveTexture(GL_TEXTURE0 + this->number+1);
+    glBindTexture(GL_TEXTURE_2D, this->textureID);
 
 }
 

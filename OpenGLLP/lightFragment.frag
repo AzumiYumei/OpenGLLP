@@ -7,26 +7,10 @@ struct Material {
     sampler2D specular;
     sampler2D emission;
 
-    //由静态数据控制的，目前还未应用
-//    vec3 diffuse;
-//    vec3 specular;
-//    vec3 emission;
     float shininess;
 }; 
 
-struct Light {
-    vec3 direction;//平行光
-    vec3 position;//点光源
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    vec3 emission;
 
-    //点光源衰减
-    float constant;
-    float linear;
-    float quadratic;
-};
 struct DirLight {
     vec3 direction;
 	
@@ -45,6 +29,7 @@ struct PointLight {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+    vec3 emission;
 };
 
 struct SpotLight {
@@ -73,7 +58,6 @@ uniform SpotLight spotLight;
 
 
 uniform Material material;
-uniform Light light;
 
 in vec3 Normal;
 in vec3 FragPos;
@@ -114,15 +98,18 @@ vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 Frag
     //将反射光的颜色（一般与光源颜色一致），乘于高光大小，乘于贴图的rgb颜色，得到镜面反射
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
 
+    //自发光
+    vec3 emission = light.emission * texture(material.emission,TexCoords).rgb;
+
     //衰减
     float distance    = length(light.position - FragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     ambient  *= attenuation;  
     diffuse   *= attenuation;
-    specular *= attenuation;   
-    //这里并没有使用自发光
+    specular *= attenuation;
+    
     //将三者的反射光叠加在一起得到最终的经验模型
-    vec3 result=ambient + diffuse + specular;
+    vec3 result=ambient + diffuse + specular + emission;
         
     return result;
 }
@@ -136,9 +123,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 cameraPos)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(cameraPos, reflectDir), 0.0), material.shininess);
     // 合并结果
-    vec3 ambient  = light.ambient  * vec3(texture(material.diffuse1, TexCoords));
-    vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse1, TexCoords));
-    vec3 specular = light.specular * spec * vec3(texture(material.specular1, TexCoords));
+    vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
+    vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
     return (ambient + diffuse + specular);
 }
 

@@ -46,29 +46,33 @@ vector<float> ObjLoad::Load()
     char c;
 
     while (getline(in, line)) {
-        if (line[0] == 'v') {
-            VertexArr temp;
-            std::istringstream iss(line);
-            iss >> s >> temp.x >> temp.y >> temp.z;
+        if (line[0] == 'v')
+        {
+            if (line[1] == 't')
+            {
+                UVArr temp;
+                std::istringstream iss(line);
+                iss >> s >> temp.u >> temp.v;
+                numsUV.push_back(temp);
+                // 获取一个uv坐标(u, v)
+            }
+            else if (line[1] == 'n')
+            {
+                NormalArr temp;
+                std::istringstream iss(line);
+                iss >> s >> temp.x >> temp.y >> temp.z;
+                numsNor.push_back(temp);
+                // 获取一个法线坐标(x,y,z)
+            }
+            else
+            {
+                VertexArr temp;
+                std::istringstream iss(line);
+                iss >> s >> temp.x >> temp.y >> temp.z;
 
-            numsXYZ.push_back(temp);
-            // 获取一个顶点坐标(x, y, z)
-        }
-
-        if (line[0] == 'v' && line[1] == 't') {
-            UVArr temp;
-            std::istringstream iss(line);
-            iss >> s >> temp.u >> temp.v;
-            numsUV.push_back(temp);
-            // 获取一个uv坐标(u, v)
-        }
-
-        if (line[0] == 'v' && line[1] == 'n') {
-            NormalArr temp;
-            std::istringstream iss(line);
-            iss >> s >> temp.x >> temp.y >> temp.z;
-            numsNor.push_back(temp);
-            // 获取一个法线坐标(x,y,z)
+                numsXYZ.push_back(temp);
+                // 获取一个顶点坐标(x, y, z)
+            }
         }
 
         if (line[0] == 'f')
@@ -88,8 +92,9 @@ vector<float> ObjLoad::Load()
                     >> temp[1].vertex >> c >> temp[1].uv >> c >> temp[1].normal
                     >> temp[2].vertex >> c >> temp[2].uv >> c >> temp[2].normal;
 
-                for (int i = 0; i < 3; i++)
-                    numsFace.push_back(temp[i]);
+                numsFace.push_back(temp[0]);
+                numsFace.push_back(temp[1]);
+                numsFace.push_back(temp[2]);
             }
 
             if (n / 2 == 4)
@@ -99,11 +104,12 @@ vector<float> ObjLoad::Load()
                     >> temp[2].vertex >> c >> temp[2].uv >> c >> temp[2].normal
                     >> temp[3].vertex >> c >> temp[3].uv >> c >> temp[3].normal;
 
-                for (int i = 0; i < 3; i++)
-                    numsFace.push_back(temp[i]);
-
-                for (int i = 1; i < 4; i++)
-                    numsFace.push_back(temp[i]);
+                numsFace.push_back(temp[0]);
+                numsFace.push_back(temp[1]);
+                numsFace.push_back(temp[2]);
+                numsFace.push_back(temp[2]);
+                numsFace.push_back(temp[3]);
+                numsFace.push_back(temp[0]);
             }
         }
     }
@@ -123,6 +129,8 @@ vector<float> ObjLoad::Load()
         VAOArr.push_back(numsUV[num.uv - 1].u);
         VAOArr.push_back(numsUV[num.uv - 1].v);
     }
+
+    this->triangleSize = numsFace.size();
 
     return VAOArr;
 }
