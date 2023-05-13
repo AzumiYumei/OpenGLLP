@@ -1,4 +1,5 @@
 #include "ObjLoad.h"
+
 struct VertexArr
 {
     float x, y, z;
@@ -25,6 +26,84 @@ ObjLoad::ObjLoad(string objName)
     this->vertexArr = Load();
 }
 
+void PushVAO(std::vector<float>& VAOArr, Face temp, std::vector<NormalArr> numsNor,
+    std::vector<UVArr> numsUV, std::vector<VertexArr> numsXYZ, glm::vec3 Tangent,
+    glm::vec3 BiTangent)
+{
+    VAOArr.push_back(numsXYZ[temp.vertex - 1].x);
+    VAOArr.push_back(numsXYZ[temp.vertex - 1].y);
+    VAOArr.push_back(numsXYZ[temp.vertex - 1].z);
+
+    VAOArr.push_back(numsNor[temp.normal - 1].x);
+    VAOArr.push_back(numsNor[temp.normal - 1].y);
+    VAOArr.push_back(numsNor[temp.normal - 1].z);
+
+    VAOArr.push_back(numsUV[temp.uv - 1].u);
+    VAOArr.push_back(numsUV[temp.uv - 1].v);
+
+    VAOArr.push_back(Tangent.x);
+    VAOArr.push_back(Tangent.y);
+    VAOArr.push_back(Tangent.z);
+
+    VAOArr.push_back(BiTangent.x);
+    VAOArr.push_back(BiTangent.y);
+    VAOArr.push_back(BiTangent.z);
+}
+
+
+void CreatTangent(std::vector<float>& VAOArr, std::vector<NormalArr> numsNor, 
+    Face temp1, Face temp2, Face temp3,std::vector<VertexArr> numsXYZ,
+    std::vector<UVArr> numsUV)
+{
+    glm::vec3 edge1, edge2;
+
+    glm::vec2 deltaUV1, deltaUV2;
+
+    glm::vec3 Tangent, BiTangent;
+
+    VertexArr Pos[3];
+    UVArr UV[3];
+
+    Pos[0] = numsXYZ[temp1.vertex - 1];
+    Pos[1] = numsXYZ[temp2.vertex - 1];
+    Pos[2] = numsXYZ[temp3.vertex - 1];
+
+    UV[0] = numsUV[temp1.uv - 1];
+    UV[1] = numsUV[temp2.uv - 1];
+    UV[2] = numsUV[temp3.uv - 1];
+
+    edge1.x = Pos[1].x - Pos[0].x;
+    edge1.y = Pos[1].y - Pos[0].y;
+    edge1.z = Pos[1].z - Pos[0].z;
+
+    edge2.x = Pos[2].x - Pos[0].x;
+    edge2.y = Pos[2].y - Pos[0].y;
+    edge2.z = Pos[2].z - Pos[0].z;
+
+    deltaUV1.x = UV[1].u - UV[0].u;
+    deltaUV1.y = UV[1].v - UV[0].v;
+
+    deltaUV2.x = UV[2].u - UV[0].u;
+    deltaUV2.y = UV[2].v - UV[0].v;
+
+    float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+    Tangent.x = f * (deltaUV2.x * edge1.x - deltaUV1.y * edge2.x);
+    Tangent.y = f * (deltaUV2.x * edge1.y - deltaUV1.y * edge2.y);
+    Tangent.z = f * (deltaUV2.x * edge1.z - deltaUV1.y * edge2.z);
+    Tangent = glm::normalize(Tangent);
+
+    BiTangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.y * edge2.x);
+    BiTangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.y * edge2.y);
+    BiTangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.y * edge2.z);
+    BiTangent = glm::normalize(BiTangent);
+
+    PushVAO(VAOArr, temp1, numsNor, numsUV, numsXYZ, Tangent, BiTangent);
+    PushVAO(VAOArr, temp2, numsNor, numsUV, numsXYZ, Tangent, BiTangent);
+    PushVAO(VAOArr, temp3, numsNor, numsUV, numsXYZ, Tangent, BiTangent);
+}
+
+
 vector<float> ObjLoad::Load()
 {
     std::ifstream in(this->obj);
@@ -37,12 +116,11 @@ vector<float> ObjLoad::Load()
     std::vector<VertexArr> numsXYZ;
     std::vector<UVArr> numsUV;
     std::vector<NormalArr> numsNor;
-    std::vector<Face> numsFace;
     std::string line;
-
     std::vector<float> VAOArr;
 
     std::string s;
+
     char c;
 
     while (getline(in, line)) {
@@ -92,9 +170,8 @@ vector<float> ObjLoad::Load()
                     >> temp[1].vertex >> c >> temp[1].uv >> c >> temp[1].normal
                     >> temp[2].vertex >> c >> temp[2].uv >> c >> temp[2].normal;
 
-                numsFace.push_back(temp[0]);
-                numsFace.push_back(temp[1]);
-                numsFace.push_back(temp[2]);
+                //利用索引将数据存入VAO，计算切线空间,也存入VAO
+                CreatTangent(VAOArr,numsNor,temp[0], temp[1], temp[2],numsXYZ, numsUV);
             }
 
             if (n / 2 == 4)
@@ -104,33 +181,18 @@ vector<float> ObjLoad::Load()
                     >> temp[2].vertex >> c >> temp[2].uv >> c >> temp[2].normal
                     >> temp[3].vertex >> c >> temp[3].uv >> c >> temp[3].normal;
 
-                numsFace.push_back(temp[0]);
-                numsFace.push_back(temp[1]);
-                numsFace.push_back(temp[2]);
-                numsFace.push_back(temp[2]);
-                numsFace.push_back(temp[3]);
-                numsFace.push_back(temp[0]);
+                //利用索引将数据存入VAO，计算切线空间,也存入VAO
+                CreatTangent(VAOArr,numsNor,temp[0], temp[1], temp[2], numsXYZ, numsUV);
+
+                //利用索引将数据存入VAO，计算切线空间,也存入VAO
+                CreatTangent(VAOArr, numsNor,temp[2], temp[3], temp[0],numsXYZ, numsUV);
             }
         }
     }
 
     in.close();
-
-    for (Face num : numsFace)
-    {
-        VAOArr.push_back(numsXYZ[num.vertex - 1].x);
-        VAOArr.push_back(numsXYZ[num.vertex - 1].y);
-        VAOArr.push_back(numsXYZ[num.vertex - 1].z);
-
-        VAOArr.push_back(numsNor[num.normal - 1].x);
-        VAOArr.push_back(numsNor[num.normal - 1].y);
-        VAOArr.push_back(numsNor[num.normal - 1].z);
-
-        VAOArr.push_back(numsUV[num.uv - 1].u);
-        VAOArr.push_back(numsUV[num.uv - 1].v);
-    }
-
-    this->triangleSize = numsFace.size();
+    this->vSize = 14;//vertex:3,normal:3,uv:2,tangent:3,bitangent:3
+    this->triangleSize = VAOArr.size()/this->vSize;
 
     return VAOArr;
 }

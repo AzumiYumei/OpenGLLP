@@ -34,6 +34,9 @@ float lastY = screenHeight / 2.0f;
 #define Stength 0.7f
 #define Scale 10.0f
 
+#define ViewNear 0.1f
+#define ViewFar 600.0f
+
 #pragma region Data
 
 glm::vec3 planePositions[] = {
@@ -123,7 +126,6 @@ glm::vec3 pointLightData[] = {
     glm::vec3(0.0f, 0.0f, 0.0f),//emissive
     glm::vec3(-0.2f, -1.0f, -0.3f),
     glm::vec3(1.0f,0.027f,0.0028f),
-    //glm::vec3(1.0f,0.0014,0.000007),
 
     glm::vec3(0.0f,  0.0f,  0.0f),
     glm::vec3(Stength, Stength, Stength),
@@ -152,6 +154,16 @@ glm::vec3 StaticMaterialData[] = {
     glm::vec3(32.0f, 0.0f, 0.0f)//高光度，后面的两个维度是无意义的
 };
 
+//天空盒索引
+vector<string> faces
+{
+    "right.jpg",
+    "left.jpg",
+    "top.jpg",
+    "bottom.jpg",
+    "front.jpg",
+    "back.jpg"
+};
 #pragma endregion
 
 #pragma region FunctionGroup
@@ -281,6 +293,46 @@ void Satellite(Shader shader, glm::vec3 trans, glm::vec3 scale, glm::vec4 moveMo
     shader.setMat4("model", model);
 }
 
+void SkyBoxTrans(Shader shader,glm::vec3 trans,glm::vec3 scale) 
+{
+    glm::mat4 model = glm::mat4(1.0f);
+
+    model = glm::translate(model, trans);
+
+    model = glm::scale(model, scale);
+
+    shader.use();
+
+    shader.setMat4("model", model);
+}
+
+unsigned int objBindVAO(ObjLoad ObjName) 
+{
+    unsigned int VAO, VBO;
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    //绑定顶点对象
+    glBindVertexArray(VAO);
+    //绑定顶点缓冲对象
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    //将顶点数组储存到VAO顶点缓冲中
+    glBufferData(GL_ARRAY_BUFFER, ObjName.vertexArr.size() * sizeof(float), &ObjName.vertexArr[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, ObjName.vSize * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, ObjName.vSize * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, ObjName.vSize * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, ObjName.vSize * sizeof(float), (void*)(8 * sizeof(float)));
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, ObjName.vSize * sizeof(float), (void*)(11 * sizeof(float)));
+    glEnableVertexAttribArray(4);
+
+    return VAO;
+}
 #pragma endregion
 
 void main()
@@ -318,40 +370,28 @@ void main()
     //打开深度测试
     glEnable(GL_DEPTH_TEST);
 
+    //面剔除
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
     //加载obj文件数组
     ObjLoad ball("ball.obj");
+    ObjLoad skyBox("skyBox.obj");
 
 #pragma region VAO&VBO&EBOBind
 
-    //设置VAO、VBO、EBO、光照VAO
-    unsigned int VAO, VBO, lightVAO ,cubeVAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    //设置VAO、VBO
+    unsigned int VAO = objBindVAO(ball);
 
-    //绑定顶点对象
-    glBindVertexArray(VAO);
-    //绑定顶点缓冲对象
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //将顶点数组储存到VAO顶点缓冲中
-    glBufferData(GL_ARRAY_BUFFER, ball.vertexArr.size()*sizeof(float), &ball.vertexArr[0], GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-
+    unsigned int cubeVAO =objBindVAO(skyBox);
+   
 #pragma endregion
 
     //翻转纹理
-    stbi_set_flip_vertically_on_load(true);
+    //stbi_set_flip_vertically_on_load(true);
 
     //创建shader
+    Shader skyShader("skyBoxVertex.vert", "skyBoxFragment.frag");//skybox
     Shader jupiterShader("lightVertex.vert", "lightFragment.frag");//jupiter
     Shader saturnShader("lightVertex.vert", "lightFragment.frag");//saturn
     Shader uranusShader("lightVertex.vert", "lightFragment.frag");//uranus
@@ -377,22 +417,25 @@ void main()
     Texture sun(8,"2k_sun.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
     Texture venus(9,"2k_venus_surface.jpg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
     Texture earth(10, "earth.jpeg", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
-
+    Texture face(11, "awesomeface.png", 4, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    //天空盒
+    Texture sky(faces);
 
     //将贴图绑定到shader
-    ShaderBindTexture(jupiterShader, 0, StaticMaterialData[2].x,false);
-    ShaderBindTexture(saturnShader, 1, StaticMaterialData[2].x,false);
-    ShaderBindTexture(uranusShader, 2, StaticMaterialData[2].x,false);
-    ShaderBindTexture(moonShader, 3, StaticMaterialData[2].x,false);
-    ShaderBindTexture(neptuneShader, 4, StaticMaterialData[2].x,false);
-    ShaderBindTexture(marsShader, 5, StaticMaterialData[2].x,false);
-    ShaderBindTexture(mercuryShader, 6, StaticMaterialData[2].x,false);
-    ShaderBindTexture(spaceShader, 7, StaticMaterialData[2].x,false);
-    ShaderBindTexture(sunShader, 8, StaticMaterialData[2].x,true);
-    ShaderBindTexture(venusShader, 9, StaticMaterialData[2].x,false);
-    ShaderBindTexture(earthShader, 10, StaticMaterialData[2].x,false);
+    ShaderBindTexture(jupiterShader, jupiter.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(saturnShader, saturn.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(uranusShader, uranus.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(moonShader, moon.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(neptuneShader, neptune.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(marsShader, mars.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(mercuryShader, mercury.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(spaceShader, space.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(sunShader, sun.number, StaticMaterialData[2].x,true);
+    ShaderBindTexture(venusShader, venus.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(earthShader, earth.number, StaticMaterialData[2].x,false);
 
-
+    skyShader.use();
+    skyShader.setInt("skybox", 0);
     
     while (!glfwWindowShouldClose(window))
     {
@@ -402,73 +445,72 @@ void main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
         Light marsLight, mercuryLight, sunLight, spaceLight, venusLight, earthLight, jupiterLight
-            , saturnLight, uranusLight, moonLight, neptuneLight;
+            , saturnLight, uranusLight, moonLight, neptuneLight,skyLight;
 
-
-        //绘制太空
-        LoopRanden(spaceShader, lightVAO, 0.1f, 600.0f);
-        spaceLight.InsertLight(spaceShader, camera, pointLightDataEmissive);//将当前light存入的信息给fragment
-        Trans(spaceShader, planePositions[0], planeScale[0]* drawPlane[0], planeMoveMode[0], planeSlef[0]);
-        glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
+        //绘制天空盒
+        LoopRanden(skyShader, cubeVAO, ViewNear, ViewFar);
+        SkyBoxTrans(skyShader, camera.cameraPosition, planeScale[0]);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, sky.textureID);
+        glDrawArrays(GL_TRIANGLES, 0, skyBox.triangleSize);
 
         //绘制太阳
         sunLight.InsertLight(sunShader, camera, pointLightDataEmissive);//将当前light存入的信息给fragment
         Trans(sunShader, planePositions[1], planeScale[1] * drawPlane[1], planeMoveMode[1], planeSlef[1]);
-        LoopRanden(sunShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(sunShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制水星
         mercuryLight.InsertLight(mercuryShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(mercuryShader, planePositions[2], planeScale[2] * Scale * drawPlane[2], planeMoveMode[2], planeSlef[2]);
-        LoopRanden(mercuryShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(mercuryShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制金星
         venusLight.InsertLight(venusShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(venusShader, planePositions[3], planeScale[3] * Scale * drawPlane[3], planeMoveMode[3], planeSlef[3]);
-        LoopRanden(venusShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(venusShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制地球
         earthLight.InsertLight(earthShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(earthShader, planePositions[4], planeScale[4] * Scale * drawPlane[4], planeMoveMode[4], planeSlef[4]);
-        LoopRanden(earthShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(earthShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制月球
         moonLight.InsertLight(moonShader, camera, pointLightData);//将当前light存入的信息给fragment
         Satellite(moonShader, planePositions[10], planeScale[10] * Scale * drawPlane[10], planeMoveMode[10], planeMoveMode[4], planePositions[4], planeSlef[10]);
-        LoopRanden(moonShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(moonShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制火星
         marsLight.InsertLight(marsShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(marsShader, planePositions[5], planeScale[5] * Scale * drawPlane[5], planeMoveMode[5], planeSlef[5]);
-        LoopRanden(marsShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(marsShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
         
         //绘制木星
         jupiterLight.InsertLight(jupiterShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(jupiterShader, planePositions[6], planeScale[6] * Scale * drawPlane[6], planeMoveMode[6], planeSlef[6]);
-        LoopRanden(jupiterShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(jupiterShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制土星
         saturnLight.InsertLight(saturnShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(saturnShader, planePositions[7], planeScale[7] * Scale * drawPlane[7], planeMoveMode[7], planeSlef[7]);
-        LoopRanden(saturnShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(saturnShader, VAO, 0.1f, 600.0f);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制天王星
         uranusLight.InsertLight(uranusShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(uranusShader, planePositions[8], planeScale[8] * Scale * drawPlane[8], planeMoveMode[8], planeSlef[8]);
-        LoopRanden(uranusShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(uranusShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //绘制海王星
         neptuneLight.InsertLight(neptuneShader, camera, pointLightData);//将当前light存入的信息给fragment
         Trans(neptuneShader, planePositions[9], planeScale[9] * Scale * drawPlane[9], planeMoveMode[9], planeSlef[9]);
-        LoopRanden(neptuneShader, lightVAO, 0.1f, 600.0f);
+        LoopRanden(neptuneShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
 
         //交换缓冲

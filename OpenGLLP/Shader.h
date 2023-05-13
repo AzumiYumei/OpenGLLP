@@ -28,6 +28,8 @@ public:
 
 	void setFloat(const string& name, float value);
 
+	void setBool(const string& name, bool value);
+
 	void setMat4(const string& name, const glm::mat4& mat);
 
 	void setVec3(const string& name,const glm::vec3& vec3);

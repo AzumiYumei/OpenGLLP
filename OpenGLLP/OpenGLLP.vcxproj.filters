@@ -57,12 +57,15 @@
   <ItemGroup>
     <Text Include="lightFragment.frag" />
     <Text Include="lightVertex.vert" />
-    <Text Include="cubeVertex.txt" />
-    <Text Include="cubeFragment.txt" />
+    <Text Include="cubeVertex.vert" />
+    <Text Include="cubeFragment.frag" />
     <Text Include="ball.obj">
       <Filter>资源文件</Filter>
     </Text>
     <Text Include="InverseBall.obj">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="skyBox.obj">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>
@@ -115,8 +118,27 @@
     <Image Include="2k_neptune.jpg">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="black.png">
+    <Image Include="back.jpg">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="bottom.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="front.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="left.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="right.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="top.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="skyBoxVertex.vert" />
+    <None Include="skyBoxFragment.frag" />
   </ItemGroup>
 </Project>

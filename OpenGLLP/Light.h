@@ -35,6 +35,9 @@ public:
     int directionLightNumber = 0;
     int spotLightNumber = 0;
 
+    bool isBilnn=false;
+    bool useNormal=false;
+
     void PointLightCaculate(Shader lightShader);
     void InsertLight(Shader shader, Camera camera, glm::vec3 data[]);
 

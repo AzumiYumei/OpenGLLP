@@ -155,8 +155,8 @@
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="cubeFragment.txt" />
-    <Text Include="cubeVertex.txt" />
+    <Text Include="cubeFragment.frag" />
+    <Text Include="cubeVertex.vert" />
     <Text Include="lightFragment.frag" />
     <Text Include="lightVertex.vert" />
   </ItemGroup>
@@ -172,11 +172,16 @@
     <Image Include="2k_uranus.jpg" />
     <Image Include="2k_venus_surface.jpg" />
     <Image Include="awesomeface.png" />
-    <Image Include="black.png" />
+    <Image Include="back.jpg" />
+    <Image Include="bottom.jpg" />
     <Image Include="container2.png" />
     <Image Include="container2_specular.png" />
     <Image Include="earth.jpeg" />
+    <Image Include="front.jpg" />
+    <Image Include="left.jpg" />
     <Image Include="matrix.jpg" />
+    <Image Include="right.jpg" />
+    <Image Include="top.jpg" />
     <Image Include="wall.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +191,15 @@
     <Text Include="InverseBall.obj">
       <FileType>Document</FileType>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="skyBox.obj">
+      <FileType>Document</FileType>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="skyBoxFragment.frag" />
+    <None Include="skyBoxVertex.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

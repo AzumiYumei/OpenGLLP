@@ -6,7 +6,7 @@ struct Material {
     sampler2D diffuse;
     sampler2D specular;
     sampler2D emission;
-
+    sampler2D normal;
     float shininess;
 }; 
 
@@ -59,9 +59,13 @@ uniform SpotLight spotLight;
 
 uniform Material material;
 
+uniform bool isBlinn;
+uniform bool useNormal;
+
 in vec3 Normal;
 in vec3 FragPos;
 in vec2 TexCoords;
+in mat3 TBN;
 
 vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 FragPos);
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
@@ -73,13 +77,24 @@ void main()
     result = CalcDirLight(dirLight, Normal, cameraPos);
     for(int i=0;i<PointLightNumber;i++)
         result += PointLightFunction( pointLights[i], Normal, material , FragPos);
-
+    
     FragColor = vec4(result, 1.0);
 }
 
 vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 FragPos)
 {
-    vec3 norm = normalize(Normal);//储存面法线向量
+    vec3 norm;//储存面法线向量
+    if(useNormal)
+    {
+        norm = texture(material.normal,TexCoords).rgb;
+        // 将法线向量转换为范围[-1,1]
+        norm = normalize(norm * 2.0 - 1.0);
+        norm = normalize(TBN * norm);
+    }
+    else
+    {
+        norm = normalize(Normal);//储存面法线向量
+    }
 
     //漫反射
     vec3 lightDir = normalize(light.position - FragPos);//获取物体指向光源的向量
@@ -87,9 +102,17 @@ vec3 PointLightFunction(PointLight light,vec3 Normal,Material material,vec3 Frag
     
     //镜面反射
     vec3 viewDir = normalize(cameraPos - FragPos);//计算物体指向摄象机的向量
-    vec3 reflectDir = reflect(-lightDir, norm);  //将光源指向物体的向量与法线放在一起计算反射光向量
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);//计算高光大小
-
+    float spec;
+    if(isBlinn)
+    {
+        vec3 halfwayDir = normalize(lightDir + viewDir);
+        spec = pow(max(dot(norm, halfwayDir), 0.0), material.shininess);
+    }
+    else
+    {
+        vec3 reflectDir = reflect(-lightDir, norm);  //将光源指向物体的向量与法线放在一起计算反射光向量
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);//计算高光大小
+    }
 
     //将漫反射的颜色（一般与物体颜色一致），乘于diff，乘于贴图的rgb颜色，得到漫反射
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;

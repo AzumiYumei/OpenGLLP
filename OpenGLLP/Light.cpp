@@ -1,6 +1,5 @@
 #include "Light.h"
 
-glm::vec3 TranslateV3(glm::vec3 position, int mode);
 
 Light::Light(glm::vec3 cameraPos,glm::vec3 Diffuse, glm::vec3 Ambient,
     glm::vec3 Specular, glm::vec3 Position, glm::vec3 Emission, glm::vec3 lightDirection,
@@ -36,6 +35,8 @@ void Light::PointLightCaculate(Shader shader)
     shader.setFloat(lightName+"].constant", this->constant);
     shader.setFloat(lightName+"].linear", this->linear);
     shader.setFloat(lightName+"].quadratic", this->quadratic);
+    shader.setBool("isBlinn", this->isBilnn);
+    shader.setBool("useNormal", this->useNormal);
     shader.setInt("PointLightNumber", this->pointLightNumber);
 }
 
