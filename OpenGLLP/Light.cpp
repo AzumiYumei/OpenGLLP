@@ -20,7 +20,6 @@ Light::Light(glm::vec3 cameraPos,glm::vec3 Diffuse, glm::vec3 Ambient,
     
 }
 
-
 void Light::PointLightCaculate(Shader shader)
 {
     this->pointLightNumber++;
@@ -47,8 +46,12 @@ void  Light::InsertLight(Shader shader,Camera camera,glm::vec3 data[])
     skip *= 7;
 
     this->cameraPos = camera.cameraPosition;
-
-    this->lightPosition = glm::vec3(data[0 + skip]);
+    
+    if (this->move)
+        this->lightPosition = glm::vec3(data[0 + skip]);
+    else
+        this->lightPosition = glm::vec3(data[0 + skip].x * glfwGetTime(), data[0 + skip].y, data[0 + skip].x*glfwGetTime());
+    
     this->lightDiffuse = glm::vec3(data[1 + skip]);
     this->lightAmbient = glm::vec3(data[2 + skip]);
     this->lightSpecular = glm::vec3(data[3 + skip]);
@@ -60,3 +63,5 @@ void  Light::InsertLight(Shader shader,Camera camera,glm::vec3 data[])
     this->quadratic = data[6 + skip].z;
     this->PointLightCaculate(shader);
 }
+
+

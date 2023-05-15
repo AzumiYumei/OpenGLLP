@@ -177,9 +177,17 @@
     <Image Include="container2.png" />
     <Image Include="container2_specular.png" />
     <Image Include="earth.jpeg" />
+    <Image Include="Emissive.png" />
+    <Image Include="Emissive_4.png" />
     <Image Include="front.jpg" />
     <Image Include="left.jpg" />
     <Image Include="matrix.jpg" />
+    <Image Include="MetallicRoughnessOpacity.png" />
+    <Image Include="MetallicRoughnessOpacity_2.png" />
+    <Image Include="Normal.png" />
+    <Image Include="Normal_3.png" />
+    <Image Include="RGB.png" />
+    <Image Include="RGB_1.png" />
     <Image Include="right.jpg" />
     <Image Include="top.jpg" />
     <Image Include="wall.jpg" />
@@ -198,8 +206,18 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
+    <None Include="firstFragment.frag" />
+    <None Include="firstVertex.vert" />
     <None Include="skyBoxFragment.frag" />
     <None Include="skyBoxVertex.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="first.obj">
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="second.obj">
+      <FileType>Document</FileType>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -68,6 +68,12 @@
     <Text Include="skyBox.obj">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="first.obj">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="second.obj">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="awesomeface.png">
@@ -136,9 +142,35 @@
     <Image Include="top.jpg">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="Emissive.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Emissive_4.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="MetallicRoughnessOpacity.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="MetallicRoughnessOpacity_2.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Normal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Normal_3.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="RGB.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="RGB_1.png">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="skyBoxVertex.vert" />
     <None Include="skyBoxFragment.frag" />
+    <None Include="firstVertex.vert" />
+    <None Include="firstFragment.frag" />
   </ItemGroup>
 </Project>

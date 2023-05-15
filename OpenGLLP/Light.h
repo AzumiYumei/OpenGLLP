@@ -37,6 +37,7 @@ public:
 
     bool isBilnn=false;
     bool useNormal=false;
+    bool move = false;
 
     void PointLightCaculate(Shader lightShader);
     void InsertLight(Shader shader, Camera camera, glm::vec3 data[]);

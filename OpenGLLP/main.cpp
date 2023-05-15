@@ -70,8 +70,12 @@ glm::vec3 planeScale[] = {
         glm::vec3(0.0003700f,  0.0003700f,  0.0003700f) //moon
 };
 
+glm::vec3 towerScaler[] = {
+    glm::vec3(1.0f,1.0f,1.0f)
+};
+
 glm::vec4 planeMoveMode[] = {
-    glm::vec4(0.0f,1.0f,0.0f,0.1f),//space
+    glm::vec4(0.0f,1.0f,0.0f,0.0f),//space
 
 
     glm::vec4(0.0f,1.0f,0.0f,0.1f),//sun 
@@ -87,7 +91,7 @@ glm::vec4 planeMoveMode[] = {
 };     
 
 float planeSlef[] = {
-    0.01,  //space      //0
+    0.00,  //space      //0
 
     0.01,  //sun        //1
     0.0169,//mercury    //2
@@ -135,7 +139,6 @@ glm::vec3 pointLightData[] = {
     glm::vec3(-0.2f, -1.0f, -0.3f),
     glm::vec3(1.0f,0.027f,0.0028f),
 };//28
-//计算点光源数量
 
 glm::vec3 pointLightDataEmissive[] = {
     glm::vec3(0.0f,  0.0f,  0.0f),
@@ -147,6 +150,16 @@ glm::vec3 pointLightDataEmissive[] = {
     glm::vec3(1.0f,0.027f,0.0028f),
 };
 
+glm::vec3 pointLightPBR[] = {
+    glm::vec3(1.0f,  0.0f,  0.0f),
+    glm::vec3(0.9f,0.9f,0.9f),
+    glm::vec3(0.9f,0.9f,0.9f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(-0.2f, -1.0f, -0.3f),
+    glm::vec3(1.0f,0.027f,0.0028f)
+
+};
 //材质球静态属性
 glm::vec3 StaticMaterialData[] = {
     glm::vec3(0.5f, 0.5f, 0.5f),//材质（漫反射+环境光）颜色
@@ -240,13 +253,31 @@ void LoopRanden(Shader &shader, unsigned int VAO, float near, float far)
 }
 
 //将贴图传递进fragment的uniform中
-void ShaderBindTexture(Shader shader,int textureCode,int shininess,bool isEmisive)
+void ShaderBindTexture(Shader shader,int textureCode,int shininess)
 {
     shader.use();
     shader.setInt("material.diffuse", textureCode);
     shader.setInt("material.specular", textureCode);
     shader.setInt("material.emission", textureCode);
     shader.setFloat("material.shininess", shininess);
+}
+
+void ShaderBindTexturePBR(Shader shader,int texRGB,int MTL,int EMI,int NOR,int shininess)
+{
+    shader.use();
+    shader.setInt("material.diffuse", texRGB);
+    shader.setInt("material.specular", MTL);
+    shader.setInt("material.emission", EMI);
+    shader.setInt("material.normal", NOR);
+    shader.setFloat("material.shininess", shininess);
+}
+
+void SimTrans(Shader shader, glm::vec3 trans)
+{
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, trans);
+    shader.use();
+    shader.setMat4("model", model);
 }
 
 void Trans(Shader &shader,glm::vec3 trans,glm::vec3 scale,glm::vec4 moveMode,float self)
@@ -335,7 +366,7 @@ unsigned int objBindVAO(ObjLoad ObjName)
 }
 #pragma endregion
 
-void main()
+void main1()
 {
 #pragma region WindowCrate&Init
 
@@ -374,9 +405,11 @@ void main()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
+
     //加载obj文件数组
     ObjLoad ball("ball.obj");
     ObjLoad skyBox("skyBox.obj");
+    ObjLoad spaceBall("InverseBall.obj");
 
 #pragma region VAO&VBO&EBOBind
 
@@ -384,6 +417,8 @@ void main()
     unsigned int VAO = objBindVAO(ball);
 
     unsigned int cubeVAO =objBindVAO(skyBox);
+
+    unsigned int spaceVAO = objBindVAO(spaceBall);
    
 #pragma endregion
 
@@ -422,17 +457,17 @@ void main()
     Texture sky(faces);
 
     //将贴图绑定到shader
-    ShaderBindTexture(jupiterShader, jupiter.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(saturnShader, saturn.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(uranusShader, uranus.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(moonShader, moon.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(neptuneShader, neptune.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(marsShader, mars.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(mercuryShader, mercury.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(spaceShader, space.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(sunShader, sun.number, StaticMaterialData[2].x,true);
-    ShaderBindTexture(venusShader, venus.number, StaticMaterialData[2].x,false);
-    ShaderBindTexture(earthShader, earth.number, StaticMaterialData[2].x,false);
+    ShaderBindTexture(jupiterShader, jupiter.number, StaticMaterialData[2].x);
+    ShaderBindTexture(saturnShader, saturn.number, StaticMaterialData[2].x);
+    ShaderBindTexture(uranusShader, uranus.number, StaticMaterialData[2].x);
+    ShaderBindTexture(moonShader, moon.number, StaticMaterialData[2].x);
+    ShaderBindTexture(neptuneShader, neptune.number, StaticMaterialData[2].x);
+    ShaderBindTexture(marsShader, mars.number, StaticMaterialData[2].x);
+    ShaderBindTexture(mercuryShader, mercury.number, StaticMaterialData[2].x);
+    ShaderBindTexture(spaceShader, space.number, StaticMaterialData[2].x);
+    ShaderBindTexture(sunShader, sun.number, StaticMaterialData[2].x);
+    ShaderBindTexture(venusShader, venus.number, StaticMaterialData[2].x);
+    ShaderBindTexture(earthShader, earth.number, StaticMaterialData[2].x);
 
     skyShader.use();
     skyShader.setInt("skybox", 0);
@@ -447,11 +482,17 @@ void main()
         Light marsLight, mercuryLight, sunLight, spaceLight, venusLight, earthLight, jupiterLight
             , saturnLight, uranusLight, moonLight, neptuneLight,skyLight;
 
-        //绘制天空盒
-        LoopRanden(skyShader, cubeVAO, ViewNear, ViewFar);
-        SkyBoxTrans(skyShader, camera.cameraPosition, planeScale[0]);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, sky.textureID);
-        glDrawArrays(GL_TRIANGLES, 0, skyBox.triangleSize);
+        ////绘制天空盒
+        //LoopRanden(skyShader, cubeVAO, ViewNear, ViewFar);
+        //SkyBoxTrans(skyShader, camera.cameraPosition, planeScale[0]);
+        //glBindTexture(GL_TEXTURE_CUBE_MAP, sky.textureID);
+        //glDrawArrays(GL_TRIANGLES, 0, skyBox.triangleSize);
+
+        //绘制太空
+        spaceLight.InsertLight(spaceShader, camera, pointLightDataEmissive);//将当前light存入的信息给fragment
+        Trans(spaceShader, planePositions[0], planeScale[0] * drawPlane[0], planeMoveMode[0], planeSlef[0]);
+        LoopRanden(spaceShader, spaceVAO, ViewNear, ViewFar);
+        glDrawArrays(GL_TRIANGLES, 0, spaceBall.triangleSize);
 
         //绘制太阳
         sunLight.InsertLight(sunShader, camera, pointLightDataEmissive);//将当前light存入的信息给fragment
@@ -512,6 +553,133 @@ void main()
         Trans(neptuneShader, planePositions[9], planeScale[9] * Scale * drawPlane[9], planeMoveMode[9], planeSlef[9]);
         LoopRanden(neptuneShader, VAO, ViewNear, ViewFar);
         glDrawArrays(GL_TRIANGLES, 0, ball.triangleSize);
+
+        //交换缓冲
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+}
+
+void main()
+{
+#pragma region WindowCrate&Init
+
+    //初始化
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+
+    //创建窗口
+    GLFWwindow* window = glfwCreateWindow(screenWeight, screenHeight, "LearnOpenGL", NULL, NULL);
+
+    glViewport(0, 0, screenWeight, screenHeight);
+
+    //如果不加上下面两条公式，那么就内存分配就会出错
+    glfwMakeContextCurrent(window);
+
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK)
+        printf("Error\n");
+
+#pragma endregion
+
+    //监听鼠标信息
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    //打开深度测试
+    glEnable(GL_DEPTH_TEST);
+
+    //面剔除
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+
+    //加载obj文件数组
+    ObjLoad firstObj("first.obj");
+    ObjLoad skyBox("skyBox.obj");
+    ObjLoad secondObj("second.obj");
+
+#pragma region VAO&VBO&EBOBind
+
+    //设置VAO、VBO
+    unsigned int firstVAO = objBindVAO(firstObj);
+
+    unsigned int cubeVAO = objBindVAO(skyBox);
+
+    unsigned int secondVAO = objBindVAO(secondObj);
+
+#pragma endregion
+
+
+    //创建shader
+    Shader firstShader("firstVertex.vert", "firstFragment.frag");
+    Shader secondShader("firstVertex.vert", "firstFragment.frag");
+
+    Shader skyShader("skyBoxVertex.vert", "skyBoxFragment.frag");//skybox
+
+    //翻转纹理
+    //stbi_set_flip_vertically_on_load(true);
+    //天空盒
+    Texture sky(faces);
+    stbi_set_flip_vertically_on_load(true);
+
+    //创建贴图
+    Texture firstTexRGB(0, "RGB.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture firstTexNOR(1, "Normal.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture firstTexMTL(2, "MetallicRoughnessOpacity.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture firstTexEMI(3, "Emissive.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+
+    Texture secondTexRGB(4, "RGB_1.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture secondTexNOR(5, "Normal_3.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture secondTexMTL(6, "MetallicRoughnessOpacity_2.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+    Texture secondTexEMI(7, "Emissive_4.png", 3, "GL_REPEAT", "GL_REPEAT", "GL_NEAREST", "GL_NEAREST");
+
+    //将贴图绑定到shader
+    ShaderBindTexturePBR(firstShader, firstTexRGB.number, firstTexMTL.number
+        , firstTexEMI.number, firstTexNOR.number, StaticMaterialData[2].x);
+
+    ShaderBindTexturePBR(secondShader, secondTexRGB.number, secondTexMTL.number
+        , secondTexEMI.number, secondTexNOR.number, StaticMaterialData[2].x);
+
+    skyShader.use();
+    skyShader.setInt("skybox", 0);
+
+    while (!glfwWindowShouldClose(window))
+    {
+        processInput(window);
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //绘制天空盒
+        LoopRanden(skyShader, cubeVAO, ViewNear, ViewFar);
+        SkyBoxTrans(skyShader, camera.cameraPosition, planeScale[0]*10.0f);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, sky.textureID);
+        glDrawArrays(GL_TRIANGLES, 0, skyBox.triangleSize);
+
+        Light firstLight,secondLight;
+
+        firstLight.useNormal = true;
+        firstLight.move = true;
+        firstLight.InsertLight(firstShader, camera, pointLightPBR);//将当前light存入的信息给fragment
+        SimTrans(firstShader, glm::vec3(1.0f));
+        LoopRanden(firstShader, firstVAO, ViewNear, ViewFar);
+        glDrawArrays(GL_TRIANGLES, 0, firstObj.triangleSize);
+
+        secondLight.useNormal = true;
+        secondLight.move = true;
+        secondLight.InsertLight(secondShader, camera, pointLightPBR);//将当前light存入的信息给fragment
+        SimTrans(secondShader, glm::vec3(1.0f));
+        LoopRanden(secondShader, secondVAO, ViewNear, ViewFar);
+        glDrawArrays(GL_TRIANGLES, 0, secondObj.triangleSize);
 
         //交换缓冲
         glfwSwapBuffers(window);
